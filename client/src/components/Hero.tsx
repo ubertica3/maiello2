@@ -14,27 +14,13 @@ export default function Hero() {
       
       <div className="container mx-auto px-4 z-10 text-center text-white">
         <h1 
-          className="font-heading text-4xl md:text-6xl font-bold mb-4 leading-tight"
+          className="font-heading text-4xl md:text-6xl font-bold mb-10 leading-tight"
           data-aos="fade-down"
           data-aos-delay="200"
           data-aos-duration="1000"
         >
           Leo Maiello
         </h1>
-        <p 
-          className="font-accent italic text-xl md:text-2xl mb-8"
-          data-aos="fade-up"
-          data-aos-delay="400"
-        >
-          "Te quiero hasta ahí"
-        </p>
-        <p 
-          className="text-lg md:text-xl mb-10 max-w-2xl mx-auto"
-          data-aos="fade-up"
-          data-aos-delay="600"
-        >
-          Una charla dinámica que aborda los dilemas emocionales y relacionales en un mundo cada vez más digital
-        </p>
         <div 
           className="flex flex-wrap justify-center gap-4"
           data-aos="zoom-in"
