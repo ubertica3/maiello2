@@ -6,6 +6,7 @@ interface SocialPlatform {
   username: string;
   icon: string;
   color: string;
+  hoverColor: string;
   url: string;
   buttonText: string;
 }
@@ -24,6 +25,7 @@ export default function Social() {
       username: "@soyleopsicologo",
       icon: "fa-instagram",
       color: "text-pink-600",
+      hoverColor: "hover:bg-pink-600",
       url: "https://www.instagram.com/soyleopsicologo/",
       buttonText: "Seguir"
     },
@@ -33,24 +35,37 @@ export default function Social() {
       username: "@soyleopsicologo",
       icon: "fa-tiktok",
       color: "text-black",
+      hoverColor: "hover:bg-black",
       url: "https://www.tiktok.com/@soyleopsicologo",
       buttonText: "Seguir"
     },
     {
       id: 3,
+      name: "YouTube",
+      username: "@soyleopsicologo",
+      icon: "fa-youtube",
+      color: "text-red-600",
+      hoverColor: "hover:bg-red-600",
+      url: "https://www.youtube.com/@soyleopsicologo",
+      buttonText: "Suscribirse"
+    },
+    {
+      id: 4,
       name: "Facebook",
       username: "lic.leomaiello",
       icon: "fa-facebook",
       color: "text-blue-600",
+      hoverColor: "hover:bg-blue-600",
       url: "https://www.facebook.com/lic.leomaiello",
       buttonText: "Seguir"
     },
     {
-      id: 4,
+      id: 5,
       name: "Spotify",
       username: "Leo Maiello",
       icon: "fa-spotify",
       color: "text-green-600",
+      hoverColor: "hover:bg-green-600",
       url: "https://open.spotify.com/intl-es/artist/3VkRAMf0aKcAwFoVHATzi5",
       buttonText: "Escuchar"
     }
@@ -92,7 +107,7 @@ export default function Social() {
   return (
     <section id="social" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-aos="fade-up">
           <h6 className="text-primary font-medium mb-2">Sígueme en redes</h6>
           <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">Redes Sociales</h2>
           <p className="max-w-2xl mx-auto text-gray-600">
@@ -100,35 +115,60 @@ export default function Social() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {platforms.map((platform) => (
-            <a 
-              key={platform.id}
-              href={platform.url} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="social-hover bg-white rounded-xl shadow-md overflow-hidden transition-all p-6 text-center"
-            >
-              <i className={`fab ${platform.icon} text-4xl ${platform.color} mb-4`}></i>
-              <h3 className="font-heading font-bold text-xl mb-2">{platform.name}</h3>
-              <p className="text-gray-600 mb-4">{platform.username}</p>
-              <span className="inline-block text-primary font-medium">{platform.buttonText}</span>
-            </a>
-          ))}
+        {/* Contenedor único para redes sociales */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-16" data-aos="zoom-in">
+          <div className="p-8">
+            <h3 className="font-heading text-2xl font-bold mb-6 text-center">Mis Redes</h3>
+            
+            <div className="flex flex-wrap justify-center gap-6">
+              {platforms.map((platform) => (
+                <a 
+                  key={platform.id}
+                  href={platform.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className={`social-icon-btn flex items-center justify-center w-16 h-16 rounded-full ${platform.color} border-2 border-current transition-all transform hover:scale-110 ${platform.hoverColor} hover:text-white`}
+                  data-aos="zoom-in"
+                  data-aos-delay={platform.id * 100}
+                >
+                  <i className={`fab ${platform.icon} text-2xl`}></i>
+                </a>
+              ))}
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-8">
+              {platforms.map((platform) => (
+                <div key={platform.id} className="text-center p-3" data-aos="fade-up" data-aos-delay={platform.id * 100}>
+                  <h4 className="font-bold mb-1">{platform.name}</h4>
+                  <p className="text-sm text-gray-600 mb-2">{platform.username}</p>
+                  <a 
+                    href={platform.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary text-sm font-medium hover:underline"
+                  >
+                    {platform.buttonText}
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         
         {/* Instagram Feed Preview */}
-        <div className="mt-20">
+        <div className="mt-20" data-aos="fade-up">
           <h3 className="font-heading text-2xl font-bold mb-8 pl-4 border-l-4 border-primary">Instagram Feed</h3>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {instagramPosts.map((post) => (
+            {instagramPosts.map((post, index) => (
               <a 
                 key={post.id}
                 href={post.link} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block overflow-hidden rounded-lg transition-all hover:opacity-90"
+                className="block overflow-hidden rounded-lg transition-all hover:opacity-90 transform hover:scale-105"
+                data-aos="zoom-in"
+                data-aos-delay={index * 50}
               >
                 <img 
                   src={post.image} 
@@ -139,7 +179,7 @@ export default function Social() {
             ))}
           </div>
           
-          <div className="text-center mt-8">
+          <div className="text-center mt-8" data-aos="fade-up">
             <a 
               href="https://www.instagram.com/soyleopsicologo/" 
               target="_blank" 
@@ -152,10 +192,10 @@ export default function Social() {
         </div>
         
         {/* Spotify Preview */}
-        <div className="mt-20">
+        <div className="mt-20" data-aos="fade-up">
           <h3 className="font-heading text-2xl font-bold mb-8 pl-4 border-l-4 border-primary">Escucha en Spotify</h3>
           
-          <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden p-6" data-aos="zoom-in">
             <iframe 
               src="https://open.spotify.com/embed/artist/3VkRAMf0aKcAwFoVHATzi5" 
               width="100%" 
