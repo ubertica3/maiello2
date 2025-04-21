@@ -8,48 +8,12 @@ export default function Footer() {
             <p className="mb-6 max-w-md">
               Psicólogo y comunicador especializado en relaciones interpersonales en la era digital. A través de charlas, eventos y contenido, busco ayudar a las personas a construir vínculos más genuinos.
             </p>
-            <div className="flex space-x-4">
-              <a 
-                href="https://www.instagram.com/soyleopsicologo/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-gray-400 hover:text-pink-500 transition-all transform hover:scale-125"
-              >
-                <i className="fab fa-instagram text-xl"></i>
-              </a>
-              <a 
-                href="https://www.tiktok.com/@soyleopsicologo" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-gray-400 hover:text-white transition-all transform hover:scale-125"
-              >
-                <i className="fab fa-tiktok text-xl"></i>
-              </a>
-              <a 
-                href="https://www.youtube.com/@soyleopsicologo" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-gray-400 hover:text-red-500 transition-all transform hover:scale-125"
-              >
-                <i className="fab fa-youtube text-xl"></i>
-              </a>
-              <a 
-                href="https://www.facebook.com/lic.leomaiello" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-gray-400 hover:text-blue-500 transition-all transform hover:scale-125"
-              >
-                <i className="fab fa-facebook text-xl"></i>
-              </a>
-              <a 
-                href="https://open.spotify.com/intl-es/artist/3VkRAMf0aKcAwFoVHATzi5" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-gray-400 hover:text-green-500 transition-all transform hover:scale-125"
-              >
-                <i className="fab fa-spotify text-xl"></i>
-              </a>
-            </div>
+            <a 
+              href="#social" 
+              className="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-all hover:scale-105 transform"
+            >
+              <i className="fas fa-share-alt mr-2"></i>Conecta en redes
+            </a>
           </div>
           
           <div className="w-full md:w-1/4 mb-8 md:mb-0" data-aos="fade-up" data-aos-duration="1000">

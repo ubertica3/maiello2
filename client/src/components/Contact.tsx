@@ -114,49 +114,13 @@ export default function Contact() {
                 </div>
                 
                 <div className="mt-8 pt-6 border-t border-gray-200" data-aos="fade-up" data-aos-delay="400">
-                  <h4 className="font-medium mb-4">Redes sociales</h4>
-                  <div className="flex space-x-4">
-                    <a 
-                      href="https://www.instagram.com/soyleopsicologo/" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-gray-500 hover:text-pink-600 transition-all transform hover:scale-125"
-                    >
-                      <i className="fab fa-instagram text-xl"></i>
-                    </a>
-                    <a 
-                      href="https://www.tiktok.com/@soyleopsicologo" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-gray-500 hover:text-black transition-all transform hover:scale-125"
-                    >
-                      <i className="fab fa-tiktok text-xl"></i>
-                    </a>
-                    <a 
-                      href="https://www.youtube.com/@soyleopsicologo" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-gray-500 hover:text-red-600 transition-all transform hover:scale-125"
-                    >
-                      <i className="fab fa-youtube text-xl"></i>
-                    </a>
-                    <a 
-                      href="https://www.facebook.com/lic.leomaiello" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-gray-500 hover:text-blue-600 transition-all transform hover:scale-125"
-                    >
-                      <i className="fab fa-facebook text-xl"></i>
-                    </a>
-                    <a 
-                      href="https://open.spotify.com/intl-es/artist/3VkRAMf0aKcAwFoVHATzi5" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-gray-500 hover:text-green-600 transition-all transform hover:scale-125"
-                    >
-                      <i className="fab fa-spotify text-xl"></i>
-                    </a>
-                  </div>
+                  <h4 className="font-medium mb-4">Más información</h4>
+                  <a 
+                    href="#social" 
+                    className="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors"
+                  >
+                    <i className="fas fa-share-alt mr-2"></i>Ver redes sociales
+                  </a>
                 </div>
               </div>
             </div>

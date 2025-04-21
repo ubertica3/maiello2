@@ -120,36 +120,22 @@ export default function Social() {
           <div className="p-8">
             <h3 className="font-heading text-2xl font-bold mb-6 text-center">Mis Redes</h3>
             
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="flex flex-wrap justify-center gap-8">
               {platforms.map((platform) => (
                 <a 
                   key={platform.id}
                   href={platform.url} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className={`social-icon-btn flex items-center justify-center w-16 h-16 rounded-full ${platform.color} border-2 border-current transition-all transform hover:scale-110 ${platform.hoverColor} hover:text-white`}
+                  className={`social-icon-btn flex flex-col items-center justify-center transition-all transform hover:scale-110`}
                   data-aos="zoom-in"
                   data-aos-delay={platform.id * 100}
                 >
-                  <i className={`fab ${platform.icon} text-2xl`}></i>
+                  <div className={`flex items-center justify-center w-16 h-16 rounded-full ${platform.color} border-2 border-current mb-2 ${platform.hoverColor} hover:text-white`}>
+                    <i className={`fab ${platform.icon} text-2xl`}></i>
+                  </div>
+                  <span className="font-medium text-sm">{platform.name}</span>
                 </a>
-              ))}
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-8">
-              {platforms.map((platform) => (
-                <div key={platform.id} className="text-center p-3" data-aos="fade-up" data-aos-delay={platform.id * 100}>
-                  <h4 className="font-bold mb-1">{platform.name}</h4>
-                  <p className="text-sm text-gray-600 mb-2">{platform.username}</p>
-                  <a 
-                    href={platform.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary text-sm font-medium hover:underline"
-                  >
-                    {platform.buttonText}
-                  </a>
-                </div>
               ))}
             </div>
           </div>
