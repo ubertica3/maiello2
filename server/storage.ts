@@ -86,7 +86,7 @@ export class DatabaseStorage implements IStorage {
   
   async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
     const result = await db.update(users)
-      .set({ ...userData, updatedAt: new Date() })
+      .set({ ...userData })
       .where(eq(users.id, id))
       .returning();
     return result[0];
@@ -149,7 +149,7 @@ export class DatabaseStorage implements IStorage {
   
   async updateEvent(id: number, eventData: Partial<InsertEvent>): Promise<Event | undefined> {
     const result = await db.update(events)
-      .set({ ...eventData, updatedAt: new Date() })
+      .set({ ...eventData })
       .where(eq(events.id, id))
       .returning();
     return result[0];
@@ -194,7 +194,7 @@ export class DatabaseStorage implements IStorage {
   
   async updateBlogPost(id: number, postData: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
     const result = await db.update(blogPosts)
-      .set({ ...postData, updatedAt: new Date() })
+      .set({ ...postData })
       .where(eq(blogPosts.id, id))
       .returning();
     return result[0];
@@ -218,7 +218,7 @@ export class DatabaseStorage implements IStorage {
     if (existing) {
       // Update existing settings
       const result = await db.update(siteSettings)
-        .set({ settings, updatedAt: new Date() })
+        .set({ settings })
         .where(eq(siteSettings.id, existing.id))
         .returning();
       return result[0];
