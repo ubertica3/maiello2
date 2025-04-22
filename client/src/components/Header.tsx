@@ -26,8 +26,8 @@ export default function Header() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-sm shadow-md" : "bg-transparent"}`}>
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <a href="#hero" className="text-2xl font-heading font-bold text-primary flex items-center">
-          <span>Leo Maiello</span>
+        <a href="#hero" className="font-heading font-bold text-primary flex items-center">
+          <i className="fas fa-heart text-3xl"></i>
         </a>
         
         {/* Mobile menu button */}
