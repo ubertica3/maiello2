@@ -37,7 +37,7 @@ function NavItem({ href, icon, label, active }: NavItemProps) {
         className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
           active
             ? 'bg-primary text-white'
-            : 'text-gray-700 hover:bg-gray-100'
+            : 'text-gray-700 hover:bg-accent'
         }`}
       >
         <span className="mr-3">{icon}</span>
