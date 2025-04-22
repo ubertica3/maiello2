@@ -15,7 +15,7 @@ async function main() {
   const db = drizzle(migrationClient, { schema });
 
   console.log('🔄 Running migrations...');
-  await migrate(db, { migrationsFolder: 'drizzle' });
+  await migrate(db, { migrationsFolder: 'migrations' });
   console.log('✅ Migrations completed');
 
   // Create admin user if it doesn't exist
