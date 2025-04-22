@@ -4,7 +4,7 @@ export default function Ebook() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center gap-12">
           <div className="md:w-2/5 order-2 md:order-1" data-aos="fade-right" data-aos-duration="1000">
-            <h6 className="text-purple-200 font-medium mb-2">Nuevo Lanzamiento</h6>
+            <h6 className="text-red-200 font-medium mb-2">Nuevo Lanzamiento</h6>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6">Descarga mi E-Book</h2>
             <p className="mb-6 leading-relaxed">
               "Vínculos Digitales: Encontrar conexiones auténticas en la era de las relaciones virtuales" es mi nuevo E-Book donde comparto reflexiones y estrategias para cultivar relaciones significativas en un mundo hiperconectado.

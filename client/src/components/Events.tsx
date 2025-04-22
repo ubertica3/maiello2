@@ -93,7 +93,7 @@ export default function Events() {
         <div className="text-center mt-12" data-aos="zoom-in" data-aos-delay="300">
           <a 
             href="#" 
-            className="inline-block border-2 border-primary text-primary hover:bg-primary hover:text-white font-medium py-3 px-8 rounded-full transition-colors transform hover:scale-105 duration-300"
+            className="inline-block border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold py-3 px-8 rounded-full transition-colors transform hover:scale-105 duration-300"
           >
             Ver todos los eventos
           </a>
