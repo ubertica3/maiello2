@@ -4,15 +4,14 @@ import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
-import { useNavigate, useLocation } from 'wouter';
+import { useLocation } from 'wouter';
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { toast } = useToast();
   const { loginMutation } = useAdminAuth();
-  const [, navigate] = useNavigate();
-  const [location] = useLocation();
+  const [, setLocation] = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,10 +28,8 @@ export default function AdminLoginPage() {
     try {
       await loginMutation.mutateAsync({ username, password });
       
-      // Redirect to admin dashboard or the original intended URL
-      const params = new URLSearchParams(location.split('?')[1]);
-      const redirectTo = params.get('redirect') || '/admin/dashboard';
-      navigate(redirectTo);
+      // Simplemente redirigimos al dashboard
+      setLocation('/admin/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       // Toast is shown via the onError callback in the mutation

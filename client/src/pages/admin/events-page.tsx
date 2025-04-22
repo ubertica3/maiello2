@@ -1,0 +1,559 @@
+import { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import AdminLayout from '@/components/admin/admin-layout';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest, queryClient } from '@/lib/queryClient';
+
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { PlusCircle, Edit, Trash2, Loader2 } from 'lucide-react';
+
+type Event = {
+  id: number;
+  title: string;
+  venue: string;
+  location: string;
+  date: string;
+  month: string;
+  time: string;
+  image: string;
+  ticketUrl: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type EventFormData = Omit<Event, 'id' | 'createdAt' | 'updatedAt'>;
+
+const emptyEventForm: EventFormData = {
+  title: '',
+  venue: '',
+  location: '',
+  date: '',
+  month: '',
+  time: '',
+  image: '',
+  ticketUrl: '',
+};
+
+export default function EventsPage() {
+  const { toast } = useToast();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+  const [formData, setFormData] = useState<EventFormData>(emptyEventForm);
+
+  // Fetch events
+  const { data: events, isLoading } = useQuery({
+    queryKey: ['/api/admin/events'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/events');
+      if (!response.ok) throw new Error('Error al cargar eventos');
+      return response.json() as Promise<Event[]>;
+    },
+  });
+
+  // Create event mutation
+  const createEventMutation = useMutation({
+    mutationFn: async (data: EventFormData) => {
+      const response = await apiRequest('POST', '/api/admin/events', data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+      toast({
+        title: 'Evento creado',
+        description: 'El evento ha sido creado exitosamente.',
+      });
+      setIsCreateDialogOpen(false);
+      resetForm();
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Hubo un error al crear el evento.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Update event mutation
+  const updateEventMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: EventFormData }) => {
+      const response = await apiRequest('PUT', `/api/admin/events/${id}`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+      toast({
+        title: 'Evento actualizado',
+        description: 'El evento ha sido actualizado exitosamente.',
+      });
+      setIsEditDialogOpen(false);
+      resetForm();
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Hubo un error al actualizar el evento.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Delete event mutation
+  const deleteEventMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest('DELETE', `/api/admin/events/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+      toast({
+        title: 'Evento eliminado',
+        description: 'El evento ha sido eliminado exitosamente.',
+      });
+      setIsDeleteDialogOpen(false);
+      setCurrentEvent(null);
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Hubo un error al eliminar el evento.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCreateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createEventMutation.mutate(formData);
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentEvent) return;
+    updateEventMutation.mutate({ id: currentEvent.id, data: formData });
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!currentEvent) return;
+    deleteEventMutation.mutate(currentEvent.id);
+  };
+
+  const openEditDialog = (event: Event) => {
+    setCurrentEvent(event);
+    setFormData({
+      title: event.title,
+      venue: event.venue,
+      location: event.location,
+      date: event.date,
+      month: event.month,
+      time: event.time,
+      image: event.image,
+      ticketUrl: event.ticketUrl,
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const openDeleteDialog = (event: Event) => {
+    setCurrentEvent(event);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const resetForm = () => {
+    setFormData(emptyEventForm);
+    setCurrentEvent(null);
+  };
+
+  return (
+    <AdminLayout>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Eventos</h1>
+            <p className="text-muted-foreground">
+              Administra los eventos y presentaciones.
+            </p>
+          </div>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2">
+                <PlusCircle size={16} />
+                <span>Nuevo Evento</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Crear Nuevo Evento</DialogTitle>
+                <DialogDescription>
+                  Completa el formulario para crear un nuevo evento.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleCreateSubmit} className="space-y-4 pt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Título</Label>
+                    <Input
+                      id="title"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleInputChange}
+                      placeholder="Título del evento"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="venue">Lugar</Label>
+                    <Input
+                      id="venue"
+                      name="venue"
+                      value={formData.venue}
+                      onChange={handleInputChange}
+                      placeholder="Teatro, centro cultural, etc."
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="location">Ciudad</Label>
+                    <Input
+                      id="location"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleInputChange}
+                      placeholder="Ciudad"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="time">Hora</Label>
+                    <Input
+                      id="time"
+                      name="time"
+                      value={formData.time}
+                      onChange={handleInputChange}
+                      placeholder="Ej: 20:00 hs"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="date">Día</Label>
+                    <Input
+                      id="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleInputChange}
+                      placeholder="Ej: 15"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="month">Mes</Label>
+                    <Input
+                      id="month"
+                      name="month"
+                      value={formData.month}
+                      onChange={handleInputChange}
+                      placeholder="Ej: JUN"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="image">URL de Imagen</Label>
+                  <Input
+                    id="image"
+                    name="image"
+                    value={formData.image}
+                    onChange={handleInputChange}
+                    placeholder="URL de la imagen del evento"
+                    required
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="ticketUrl">URL de Compra</Label>
+                  <Input
+                    id="ticketUrl"
+                    name="ticketUrl"
+                    value={formData.ticketUrl}
+                    onChange={handleInputChange}
+                    placeholder="URL para comprar entradas"
+                    required
+                  />
+                </div>
+                
+                <DialogFooter>
+                  <Button
+                    type="submit"
+                    disabled={createEventMutation.isPending}
+                  >
+                    {createEventMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creando...
+                      </>
+                    ) : (
+                      'Crear Evento'
+                    )}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : events && events.length > 0 ? (
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Título</TableHead>
+                  <TableHead>Lugar</TableHead>
+                  <TableHead>Ciudad</TableHead>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead>Hora</TableHead>
+                  <TableHead className="text-right">Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {events.map((event) => (
+                  <TableRow key={event.id}>
+                    <TableCell className="font-medium">{event.title}</TableCell>
+                    <TableCell>{event.venue}</TableCell>
+                    <TableCell>{event.location}</TableCell>
+                    <TableCell>{event.date} {event.month}</TableCell>
+                    <TableCell>{event.time}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => openEditDialog(event)}
+                        >
+                          <Edit size={16} />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => openDeleteDialog(event)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-64 bg-gray-50 border border-dashed rounded-lg">
+            <p className="text-muted-foreground mb-4">No hay eventos programados</p>
+            <Button onClick={() => setIsCreateDialogOpen(true)}>Crear Primer Evento</Button>
+          </div>
+        )}
+      </div>
+
+      {/* Edit Event Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Evento</DialogTitle>
+            <DialogDescription>
+              Actualiza la información del evento.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleEditSubmit} className="space-y-4 pt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-title">Título</Label>
+                <Input
+                  id="edit-title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-venue">Lugar</Label>
+                <Input
+                  id="edit-venue"
+                  name="venue"
+                  value={formData.venue}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-location">Ciudad</Label>
+                <Input
+                  id="edit-location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-time">Hora</Label>
+                <Input
+                  id="edit-time"
+                  name="time"
+                  value={formData.time}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-date">Día</Label>
+                <Input
+                  id="edit-date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-month">Mes</Label>
+                <Input
+                  id="edit-month"
+                  name="month"
+                  value={formData.month}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="edit-image">URL de Imagen</Label>
+              <Input
+                id="edit-image"
+                name="image"
+                value={formData.image}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="edit-ticketUrl">URL de Compra</Label>
+              <Input
+                id="edit-ticketUrl"
+                name="ticketUrl"
+                value={formData.ticketUrl}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            
+            <DialogFooter>
+              <Button
+                type="submit"
+                disabled={updateEventMutation.isPending}
+              >
+                {updateEventMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Actualizando...
+                  </>
+                ) : (
+                  'Guardar Cambios'
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Eliminar Evento</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que deseas eliminar este evento? Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="pt-4">
+            {currentEvent && (
+              <div className="mb-4 p-4 bg-gray-50 rounded-md">
+                <p className="font-medium">{currentEvent.title}</p>
+                <p className="text-sm text-muted-foreground">
+                  {currentEvent.venue}, {currentEvent.location} - {currentEvent.date} {currentEvent.month} {currentEvent.time}
+                </p>
+              </div>
+            )}
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDeleteDialogOpen(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDeleteConfirm}
+                disabled={deleteEventMutation.isPending}
+              >
+                {deleteEventMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Eliminando...
+                  </>
+                ) : (
+                  'Eliminar'
+                )}
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </AdminLayout>
+  );
+}

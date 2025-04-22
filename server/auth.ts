@@ -5,12 +5,13 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
-import { type User, type InsertUser } from "@shared/schema";
-import { log } from "./vite";
+import { InsertUser, userRoleEnum } from "@shared/schema";
+import { eq } from "drizzle-orm";
+import { db } from "./db";
+import { users } from "@shared/schema";
 
 declare global {
   namespace Express {
-    // Extend the User interface without creating a circular reference
     interface User {
       id: number;
       username: string;
@@ -37,32 +38,28 @@ export async function comparePasswords(supplied: string, stored: string) {
   return timingSafeEqual(hashedBuf, suppliedBuf);
 }
 
-// Check if user is authenticated
 export function isAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.status(401).json({ message: "No autenticado" });
+  res.status(401).json({ error: "No autorizado" });
 }
 
-// Check if user is admin
 export function isAdmin(req: any, res: any, next: any) {
   if (req.isAuthenticated() && req.user.role === "admin") {
     return next();
   }
-  res.status(403).json({ message: "Acceso no autorizado" });
+  res.status(403).json({ error: "Acceso prohibido" });
 }
 
 export function setupAuth(app: Express) {
-  // Set up express-session
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "supersecret-changeme-in-production",
+    secret: process.env.SESSION_SECRET || "session-secret-temp-dev-only",
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // 24 hours
-      sameSite: 'lax'
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
     }
   };
 
@@ -70,14 +67,22 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Set up passport local strategy
+  // Configurar la estrategia de autenticación local
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
         const user = await storage.getUserByUsername(username);
-        if (!user || !(await comparePasswords(password, user.password))) {
-          return done(null, false, { message: "Usuario o contraseña incorrectos" });
+        
+        if (!user) {
+          return done(null, false, { message: "Usuario no encontrado" });
         }
+        
+        const isValid = await comparePasswords(password, user.password);
+        
+        if (!isValid) {
+          return done(null, false, { message: "Contraseña incorrecta" });
+        }
+        
         return done(null, user);
       } catch (error) {
         return done(error);
@@ -85,7 +90,6 @@ export function setupAuth(app: Express) {
     })
   );
 
-  // Serialize and deserialize user
   passport.serializeUser((user, done) => {
     done(null, user.id);
   });
@@ -99,85 +103,69 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Register routes
+  // Crear un usuario admin si no existe
+  createAdminUserIfNeeded();
+
+  // Rutas de autenticación
   app.post("/api/admin/login", (req, res, next) => {
-    passport.authenticate("local", (err: any, user: any, info: any) => {
+    passport.authenticate("local", (err, user, info) => {
       if (err) {
         return next(err);
       }
       if (!user) {
-        return res.status(401).json({ message: info.message || "Autenticación fallida" });
+        return res.status(401).json({ error: info.message || "Credenciales inválidas" });
       }
       if (user.role !== "admin") {
-        return res.status(403).json({ message: "Acceso no autorizado" });
+        return res.status(403).json({ error: "No tienes permisos de administrador" });
       }
-      req.logIn(user, (err) => {
+      req.login(user, (err) => {
         if (err) {
           return next(err);
         }
-        return res.status(200).json({ 
-          message: "Inicio de sesión exitoso",
-          user: {
-            id: user.id,
-            username: user.username,
-            name: user.name,
-            email: user.email,
-            role: user.role
-          }
-        });
+        return res.status(200).json({ user, message: "Inicio de sesión exitoso" });
       });
     })(req, res, next);
   });
 
-  app.post("/api/admin/logout", (req, res) => {
+  app.post("/api/admin/logout", isAuthenticated, (req, res) => {
     req.logout((err) => {
       if (err) {
-        return res.status(500).json({ message: "Error al cerrar sesión" });
+        return res.status(500).json({ error: "Error al cerrar sesión" });
       }
-      res.status(200).json({ message: "Sesión cerrada exitosamente" });
+      res.status(200).json({ message: "Sesión cerrada correctamente" });
     });
   });
 
   app.get("/api/admin/session", (req, res) => {
     if (req.isAuthenticated() && req.user.role === "admin") {
-      res.status(200).json({
-        authenticated: true,
-        user: {
-          id: req.user.id,
-          username: req.user.username,
-          name: req.user.name,
-          email: req.user.email,
-          role: req.user.role
-        }
-      });
+      // No enviar la contraseña al cliente
+      const { password, ...userWithoutPassword } = req.user;
+      res.json({ authenticated: true, user: userWithoutPassword });
     } else {
-      res.status(200).json({ authenticated: false });
+      res.json({ authenticated: false, user: null });
     }
   });
-
-  // Create admin user if doesn't exist
-  createAdminUserIfNeeded();
 }
 
 async function createAdminUserIfNeeded() {
   try {
-    const adminUser = await storage.getUserByUsername("admin");
+    // Verificar si ya existe un usuario admin
+    const adminUser = await db.select().from(users).where(eq(users.role, "admin")).limit(1);
     
-    if (!adminUser) {
-      log("Admin user not found, creating default admin user", "auth");
-      
+    if (adminUser.length === 0) {
+      // Crear usuario admin por defecto
       const adminUserData: InsertUser = {
         username: "admin",
         password: await hashPassword("123456"),
-        name: "Admin",
+        name: "Administrador",
         email: "admin@example.com",
-        role: "admin"
+        role: "admin",
       };
       
       await storage.createUser(adminUserData);
-      log("Default admin user created", "auth");
+      console.log("Usuario administrador creado correctamente");
     }
   } catch (error) {
-    console.error("Error checking/creating admin user:", error);
+    console.error("Error al crear usuario administrador:", error);
   }
 }
