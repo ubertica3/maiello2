@@ -211,7 +211,7 @@ export default function DashboardPage() {
                         </div>
                       ) : events && events.length > 0 ? (
                         <div className="space-y-4">
-                          {events.slice(0, 3).map((event) => (
+                          {events.slice(0, 3).map((event: any) => (
                             <div key={event.id} className="flex justify-between items-center border-b pb-2">
                               <div>
                                 <p className="font-medium">{event.title}</p>
@@ -322,7 +322,7 @@ export default function DashboardPage() {
                         </div>
                       ) : contacts && contacts.length > 0 ? (
                         <div className="space-y-4">
-                          {contacts.slice(0, 3).map((contact) => (
+                          {contacts.slice(0, 3).map((contact: any) => (
                             <div key={contact.id} className="flex justify-between items-center border-b pb-2">
                               <div>
                                 <p className="font-medium">{contact.name}</p>

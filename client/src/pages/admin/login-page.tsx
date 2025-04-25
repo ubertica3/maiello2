@@ -28,8 +28,15 @@ export default function AdminLoginPage() {
     try {
       await loginMutation.mutateAsync({ username, password });
       
-      // Simplemente redirigimos al dashboard
-      setLocation('/admin/dashboard');
+      // Obtenemos el parámetro de redirección de la URL o usamos el dashboard como valor predeterminado
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectTo = searchParams.get('redirect') || '/admin/dashboard';
+      
+      // Redirigimos después de un pequeño retraso para permitir que el estado de autenticación se actualice
+      setTimeout(() => {
+        setLocation(redirectTo);
+      }, 500);
+      
     } catch (error) {
       console.error('Login error:', error);
       // Toast is shown via the onError callback in the mutation
