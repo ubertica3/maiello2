@@ -364,27 +364,31 @@ export default function DashboardPage() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <h4 className="font-medium text-sm">Configuración rápida</h4>
-                          <div className="grid grid-cols-2 gap-2">
-                            <Link href="/admin/settings?tab=sections">
-                              <a>
-                                <Button variant="outline" className="w-full text-left justify-start gap-2">
-                                  <Settings className="h-4 w-4" />
-                                  <span>Secciones</span>
-                                </Button>
-                              </a>
-                            </Link>
-                            <Link href="/admin/settings?tab=appearance">
-                              <a>
-                                <Button variant="outline" className="w-full text-left justify-start gap-2">
-                                  <Settings className="h-4 w-4" />
-                                  <span>Apariencia</span>
-                                </Button>
-                              </a>
-                            </Link>
-                          </div>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md">
+                          <h4 className="text-sm font-medium">E-book</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Gestión del e-book promocionado
+                          </p>
+                          <Link href="/admin/ebook">
+                            <a className="text-xs text-primary hover:underline mt-1 inline-flex items-center">
+                              Editar configuración
+                              <ArrowRight className="ml-1 h-3 w-3" />
+                            </a>
+                          </Link>
+                        </div>
+                        
+                        <div className="p-2 border rounded-md">
+                          <h4 className="text-sm font-medium">Redes Sociales</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Enlaces a perfiles en redes sociales
+                          </p>
+                          <Link href="/admin/settings">
+                            <a className="text-xs text-primary hover:underline mt-1 inline-flex items-center">
+                              Gestionar enlaces
+                              <ArrowRight className="ml-1 h-3 w-3" />
+                            </a>
+                          </Link>
                         </div>
                       </div>
                     </CardContent>
@@ -394,7 +398,7 @@ export default function DashboardPage() {
             )}
           </TabsContent>
           
-          <TabsContent value="analytics">
+          <TabsContent value="analytics" className="space-y-4">
             <MetricsDashboard />
           </TabsContent>
         </Tabs>

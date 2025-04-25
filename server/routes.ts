@@ -323,7 +323,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertBlogPostSchema.parse(req.body);
       
-      if (!validatedData.authorId) {
+      if (!validatedData.authorId && req.user) {
         validatedData.authorId = req.user.id;
       }
       
