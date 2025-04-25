@@ -84,7 +84,9 @@ export default function EbookPage() {
       return response.json();
     },
     onSuccess: () => {
+      // Invalidar tanto las consultas de admin como las públicas
       queryClient.invalidateQueries({ queryKey: ['/api/admin/ebook'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/ebook'] });
       toast({
         title: 'E-book actualizado',
         description: 'La información del e-book ha sido actualizada exitosamente.',

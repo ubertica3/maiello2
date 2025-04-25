@@ -72,7 +72,7 @@ export default function Ebook() {
     return (
       <section id="ebook" className="py-20 bg-primary text-white">
         <div className="container mx-auto px-4 flex justify-center items-center h-64">
-          <p className="text-white">{error || "No se encontró información del e-book."}</p>
+          <p className="text-white">{error instanceof Error ? error.message : "No se encontró información del e-book."}</p>
         </div>
       </section>
     );
