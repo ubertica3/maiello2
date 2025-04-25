@@ -79,7 +79,9 @@ export default function EventsPage() {
       return response.json();
     },
     onSuccess: () => {
+      // Invalidar tanto las consultas de admin como las públicas
       queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({
         title: 'Evento creado',
         description: 'El evento ha sido creado exitosamente.',
@@ -103,7 +105,9 @@ export default function EventsPage() {
       return response.json();
     },
     onSuccess: () => {
+      // Invalidar tanto las consultas de admin como las públicas
       queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({
         title: 'Evento actualizado',
         description: 'El evento ha sido actualizado exitosamente.',
@@ -126,7 +130,9 @@ export default function EventsPage() {
       await apiRequest('DELETE', `/api/admin/events/${id}`);
     },
     onSuccess: () => {
+      // Invalidar tanto las consultas de admin como las públicas
       queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({
         title: 'Evento eliminado',
         description: 'El evento ha sido eliminado exitosamente.',

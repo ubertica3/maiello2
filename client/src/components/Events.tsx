@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 
 interface Event {
@@ -14,34 +14,24 @@ interface Event {
 }
 
 export default function Events() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Fetch events from the API
-    const fetchEvents = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch('/api/events');
-        
-        if (!response.ok) {
-          throw new Error('Error al cargar eventos');
-        }
-        
-        const data = await response.json();
-        setEvents(data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching events:', err);
-        setError('No se pudieron cargar los eventos. Por favor, intenta más tarde.');
-      } finally {
-        setIsLoading(false);
+  // Usando React Query para obtener los eventos - esto mejorará la sincronización con el panel admin
+  const { 
+    data: events = [], 
+    isLoading, 
+    error 
+  } = useQuery({
+    queryKey: ['/api/events'],
+    queryFn: async () => {
+      const response = await fetch('/api/events');
+      if (!response.ok) {
+        throw new Error('Error al cargar eventos');
       }
-    };
-
-    fetchEvents();
-  }, []);
+      return response.json() as Promise<Event[]>;
+    },
+    // Refrescar los datos más frecuentemente para ver los cambios del admin
+    refetchInterval: 30000, // refrescar cada 30 segundos
+    staleTime: 15000 // considerar los datos obsoletos después de 15 segundos
+  });
 
   return (
     <section id="events" className="py-20 bg-gray-50">
@@ -58,7 +48,7 @@ export default function Events() {
           </div>
         ) : error ? (
           <div className="flex justify-center items-center h-64">
-            <p className="text-red-500">{error}</p>
+            <p className="text-red-500">{error instanceof Error ? error.message : 'Error al cargar eventos'}</p>
           </div>
         ) : events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
