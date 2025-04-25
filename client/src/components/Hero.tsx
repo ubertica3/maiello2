@@ -3,7 +3,7 @@ export default function Hero() {
     <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img 
-          src="/images/11.jpeg" 
+          src="attached_assets/11.jpeg" 
           alt="Leo Maiello en el escenario" 
           className="w-full h-full object-cover"
           data-aos="fade"

@@ -38,7 +38,7 @@ export default function Ebook() {
             data-aos-duration="1000"
           >
             <img 
-              src="/images/ebecdf83-957e-4c03-a0f1-1fd610cf3b3a.jpeg" 
+              src="attached_assets/ebecdf83-957e-4c03-a0f1-1fd610cf3b3a.jpeg" 
               alt="E-Book Leo Maiello" 
               className="max-w-full h-auto rounded-lg shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500"
             />

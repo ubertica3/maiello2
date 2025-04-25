@@ -22,7 +22,7 @@ export default function Events() {
       date: "15",
       month: "JUN",
       time: "20:00 hs",
-      image: "/images/13.jpeg",
+      image: "attached_assets/13.jpeg",
       ticketUrl: "#"
     },
     {
@@ -33,7 +33,7 @@ export default function Events() {
       date: "22",
       month: "JUL",
       time: "19:30 hs",
-      image: "/images/9.jpeg",
+      image: "attached_assets/9.jpeg",
       ticketUrl: "#"
     },
     {
@@ -44,7 +44,7 @@ export default function Events() {
       date: "8",
       month: "AGO",
       time: "18:00 hs",
-      image: "/images/7.jpeg",
+      image: "attached_assets/7.jpeg",
       ticketUrl: "#"
     }
   ]);

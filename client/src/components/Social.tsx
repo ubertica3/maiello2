@@ -74,32 +74,32 @@ export default function Social() {
   const [instagramPosts] = useState<InstagramPost[]>([
     {
       id: 1,
-      image: "/images/1ae3d7cd-3c35-4a05-b3e8-0f0bc456ae7f.jpeg",
+      image: "attached_assets/1ae3d7cd-3c35-4a05-b3e8-0f0bc456ae7f.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 2,
-      image: "/images/40e32192-445e-4f87-ab03-5b5411846ccf.jpeg",
+      image: "attached_assets/40e32192-445e-4f87-ab03-5b5411846ccf.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 3,
-      image: "/images/6d25d542-2bea-4f9b-b5ec-d837024f7593.jpeg",
+      image: "attached_assets/6d25d542-2bea-4f9b-b5ec-d837024f7593.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 4,
-      image: "/images/efcffbc0-db1c-4d5c-982f-b8b6a2d066f1.jpeg",
+      image: "attached_assets/efcffbc0-db1c-4d5c-982f-b8b6a2d066f1.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 5,
-      image: "/images/15.jpeg",
+      image: "attached_assets/15.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 6,
-      image: "/images/19.jpeg",
+      image: "attached_assets/19.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     }
   ]);
