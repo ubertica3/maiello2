@@ -12,6 +12,7 @@ import SubscribersPage from "@/pages/admin/subscribers-page";
 import BlogPage from "@/pages/admin/blog-page";
 import SettingsPage from "@/pages/admin/settings-page";
 import EbookPage from "@/pages/admin/ebook-page";
+import ContactsPage from "@/pages/admin/contacts-page";
 import { ProtectedAdminRoute } from "@/components/admin/protected-admin-route";
 import { AdminAuthProvider } from "@/hooks/use-admin-auth";
 
@@ -26,6 +27,7 @@ function Router() {
       <ProtectedAdminRoute path="/admin/dashboard" component={DashboardPage} />
       <ProtectedAdminRoute path="/admin/events" component={EventsPage} />
       <ProtectedAdminRoute path="/admin/subscribers" component={SubscribersPage} />
+      <ProtectedAdminRoute path="/admin/contacts" component={ContactsPage} />
       <ProtectedAdminRoute path="/admin/blog" component={BlogPage} />
       <ProtectedAdminRoute path="/admin/ebook" component={EbookPage} />
       <ProtectedAdminRoute path="/admin/settings" component={SettingsPage} />

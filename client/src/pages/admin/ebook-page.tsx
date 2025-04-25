@@ -139,11 +139,17 @@ export default function EbookPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">E-book</h1>
-          <p className="text-muted-foreground">
-            Gestiona la información del e-book que se muestra en tu sitio web.
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">E-book</h1>
+            <p className="text-muted-foreground">
+              Gestiona la información del e-book que se muestra en tu sitio web.
+            </p>
+          </div>
+          <Button variant="outline" onClick={() => window.history.back()}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver
+          </Button>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -181,16 +187,30 @@ export default function EbookPage() {
                   />
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="coverImage">URL de la Imagen de Portada</Label>
-                  <Input
-                    id="coverImage"
-                    name="coverImage"
-                    value={formData.coverImage}
-                    onChange={handleInputChange}
-                    placeholder="URL de la imagen de portada"
-                    required
-                  />
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="coverImage">URL de la Imagen de Portada</Label>
+                    <Input
+                      id="coverImage"
+                      name="coverImage"
+                      value={formData.coverImage}
+                      onChange={handleInputChange}
+                      placeholder="URL de la imagen de portada"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Subir nueva imagen</Label>
+                    <ImageUpload 
+                      onImageUploaded={(imageUrl) => {
+                        setFormData(prev => ({
+                          ...prev,
+                          coverImage: imageUrl
+                        }));
+                      }}
+                      defaultImageUrl={formData.coverImage}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
