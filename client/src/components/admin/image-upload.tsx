@@ -1,68 +1,81 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
-import { Upload, ImagePlus, Loader2, AlertCircle, X } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Loader2, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 interface ImageUploadProps {
   onImageUploaded: (imageUrl: string) => void;
   defaultImageUrl?: string;
-  className?: string;
 }
 
-export function ImageUpload({ onImageUploaded, defaultImageUrl, className = '' }: ImageUploadProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(defaultImageUrl || null);
+export function ImageUpload({ onImageUploaded, defaultImageUrl }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
+  const [preview, setPreview] = useState<string | null>(defaultImageUrl || null);
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+  
+  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
     
-    if (file) {
-      // Validar que es una imagen
-      if (!file.type.startsWith('image/')) {
-        setError('El archivo seleccionado no es una imagen válida');
-        return;
-      }
-      
-      // Validar tamaño (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setError('La imagen es demasiado grande (máximo 5MB)');
-        return;
-      }
-      
-      setSelectedFile(file);
-      setError(null);
-      
-      // Crear preview de la imagen
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0]);
     }
   };
-
-  const clearSelection = () => {
-    setSelectedFile(null);
-    setPreviewUrl(defaultImageUrl || null);
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
+  
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    
-    if (!selectedFile) {
-      setError('Por favor seleccione una imagen');
+    e.stopPropagation();
+    setDragActive(true);
+  };
+  
+  const onDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileUpload(e.target.files[0]);
+    }
+  };
+  
+  const handleFileUpload = async (file: File) => {
+    // Validate file type
+    if (!file.type.includes('image/')) {
+      toast({
+        title: 'Error',
+        description: 'Por favor, sube un archivo de imagen válido (JPEG, PNG, WebP, etc.)',
+        variant: 'destructive',
+      });
       return;
     }
     
-    setIsUploading(true);
-    setError(null);
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      toast({
+        title: 'Error',
+        description: 'La imagen es demasiado grande. El tamaño máximo permitido es 5MB.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
     
     try {
+      setIsUploading(true);
       const formData = new FormData();
-      formData.append('image', selectedFile);
+      formData.append('image', file);
       
       const response = await fetch('/api/admin/upload', {
         method: 'POST',
@@ -70,99 +83,86 @@ export function ImageUpload({ onImageUploaded, defaultImageUrl, className = '' }
       });
       
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Error al subir la imagen');
+        throw new Error('Error al subir la imagen');
       }
       
       const data = await response.json();
-      
-      // Llamar al callback con la URL de la imagen
       onImageUploaded(data.url);
       
       toast({
-        title: 'Imagen subida con éxito',
-        description: 'La imagen se ha subido correctamente',
+        title: 'Imagen subida',
+        description: 'La imagen se ha subido correctamente.',
       });
-    } catch (err) {
-      console.error('Error uploading image:', err);
-      setError(err instanceof Error ? err.message : 'Error al subir la imagen');
-      
+    } catch (error) {
       toast({
         title: 'Error',
-        description: err instanceof Error ? err.message : 'Error al subir la imagen',
+        description: error instanceof Error ? error.message : 'Error al subir la imagen',
         variant: 'destructive',
       });
     } finally {
       setIsUploading(false);
     }
   };
-
+  
+  const handleRemoveImage = () => {
+    setPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+  
   return (
-    <div className={`space-y-4 ${className}`}>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Input
-            id="image-upload"
-            type="file"
-            onChange={handleFileChange}
-            accept="image/*"
-            disabled={isUploading}
-            className="flex-1"
+    <div className="space-y-4">
+      {preview ? (
+        <div className="relative rounded-md overflow-hidden border">
+          <img 
+            src={preview} 
+            alt="Vista previa" 
+            className="w-full h-auto max-h-[200px] object-contain bg-slate-50"
           />
-          {selectedFile && (
-            <Button 
-              type="button" 
-              variant="ghost" 
-              size="icon" 
-              onClick={clearSelection}
-              disabled={isUploading}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-        
-        {previewUrl && (
-          <div className="relative border rounded-md overflow-hidden">
-            <img 
-              src={previewUrl} 
-              alt="Vista previa" 
-              className="w-full h-auto max-h-64 object-contain bg-slate-100" 
-            />
-            {defaultImageUrl === previewUrl && (
-              <div className="absolute bottom-2 right-2 bg-slate-800 text-white text-xs py-1 px-2 rounded-md opacity-80">
-                Imagen actual
-              </div>
-            )}
-          </div>
-        )}
-        
-        {error && (
-          <div className="flex items-center gap-2 text-destructive text-sm">
-            <AlertCircle className="h-4 w-4" />
-            <span>{error}</span>
-          </div>
-        )}
-        
-        <div className="flex justify-end">
-          <Button 
-            type="submit" 
-            disabled={!selectedFile || isUploading || previewUrl === defaultImageUrl}
+          <Button
+            type="button"
+            variant="destructive"
+            size="icon"
+            className="absolute top-2 right-2 h-8 w-8 rounded-full opacity-90"
+            onClick={handleRemoveImage}
           >
-            {isUploading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Subiendo...
-              </>
-            ) : (
-              <>
-                <Upload className="mr-2 h-4 w-4" />
-                Subir imagen
-              </>
-            )}
+            <X className="h-4 w-4" />
           </Button>
         </div>
-      </form>
+      ) : (
+        <div
+          className={`border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+            dragActive ? 'border-primary bg-primary/5' : 'border-border'
+          }`}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Upload className="h-10 w-10 text-muted-foreground mb-2" />
+          <p className="text-sm font-medium mb-1">
+            Arrastra una imagen o haz clic para seleccionar
+          </p>
+          <p className="text-xs text-muted-foreground">
+            PNG, JPG, WebP hasta 5MB
+          </p>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </div>
+      )}
+      
+      {isUploading && (
+        <div className="flex items-center justify-center py-2">
+          <Loader2 className="h-5 w-5 animate-spin text-primary mr-2" />
+          <span className="text-sm">Subiendo imagen...</span>
+        </div>
+      )}
     </div>
   );
 }

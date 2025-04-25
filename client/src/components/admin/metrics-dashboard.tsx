@@ -1,335 +1,205 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BarChart, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Bar, Line, CartesianGrid } from 'recharts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Loader2, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
-// Datos simulados para las métricas
-const generateVisitsData = () => {
-  const now = new Date();
-  const data = [];
-  
-  for (let i = 30; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    
-    // Generar número entre 50 y 300 con tendencia creciente
-    const baseVisits = 50 + Math.floor(Math.random() * 100);
-    const trendFactor = 1 + (i / 30) * 0.5; // Factor que aumenta con el tiempo
-    const visits = Math.floor(baseVisits * trendFactor);
-    
-    data.push({
-      date: date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
-      visits: visits,
-      uniqueVisitors: Math.floor(visits * 0.7),
-    });
+interface MetricsDashboardProps {
+  visitorData?: any;
+  isLoading?: boolean;
+}
+
+export function MetricsDashboard({ visitorData, isLoading = false }: MetricsDashboardProps) {
+  // Sample data para visualización (a reemplazar con datos reales cuando estén disponibles)
+  const [data, setData] = useState([
+    { name: 'Lun', visitors: 400, pageViews: 800 },
+    { name: 'Mar', visitors: 380, pageViews: 750 },
+    { name: 'Mie', visitors: 510, pageViews: 920 },
+    { name: 'Jue', visitors: 420, pageViews: 850 },
+    { name: 'Vie', visitors: 530, pageViews: 980 },
+    { name: 'Sab', visitors: 620, pageViews: 1100 },
+    { name: 'Dom', visitors: 750, pageViews: 1250 },
+  ]);
+
+  // Cuando tengamos datos reales, los actualizamos aquí
+  useEffect(() => {
+    if (visitorData) {
+      setData(visitorData);
+    }
+  }, [visitorData]);
+
+  // Métricas de resumen calculadas
+  const totalVisitors = data.reduce((sum, item) => sum + item.visitors, 0);
+  const totalPageViews = data.reduce((sum, item) => sum + item.pageViews, 0);
+  const averageVisitorsPerDay = Math.round(totalVisitors / data.length);
+  const conversionRate = Math.round((totalVisitors / totalPageViews) * 100);
+
+  // Cambios porcentuales (para visualización)
+  const visitorsChange = 12.5; // Ejemplo: 12.5% más que el período anterior
+  const pageViewsChange = 8.3; // Ejemplo: 8.3% más que el período anterior
+  const bounceRateChange = -3.2; // Ejemplo: 3.2% menos que el período anterior
+  const avgSessionChange = 5.6; // Ejemplo: 5.6% más que el período anterior
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
   }
-  
-  return data;
-};
 
-// Datos simulados para fuentes de tráfico
-const trafficSourcesData = [
-  { name: 'Directo', value: 35 },
-  { name: 'Redes Sociales', value: 45 },
-  { name: 'Búsquedas', value: 15 },
-  { name: 'Referencias', value: 5 },
-];
-
-// Datos simulados para dispositivos
-const devicesData = [
-  { name: 'Móvil', value: 65 },
-  { name: 'Desktop', value: 30 },
-  { name: 'Tablet', value: 5 },
-];
-
-// Colores para las gráficas
-const colors = {
-  primary: 'rgb(167, 42, 42)',
-  secondary: 'rgba(167, 42, 42, 0.7)',
-  tertiary: 'rgba(167, 42, 42, 0.4)',
-  grid: '#e5e7eb',
-};
-
-export function MetricsDashboard() {
-  const [visitsData] = useState(generateVisitsData);
-  const [timeRange, setTimeRange] = useState('30d');
-  
-  // Calcular totales
-  const totalVisits = visitsData.reduce((sum, item) => sum + item.visits, 0);
-  const totalUniqueVisitors = visitsData.reduce((sum, item) => sum + item.uniqueVisitors, 0);
-  
-  // Calcular aumento porcentual
-  const firstWeekVisits = visitsData.slice(0, 7).reduce((sum, item) => sum + item.visits, 0);
-  const lastWeekVisits = visitsData.slice(-7).reduce((sum, item) => sum + item.visits, 0);
-  const growthRate = ((lastWeekVisits - firstWeekVisits) / firstWeekVisits) * 100;
-  
   return (
-    <div className="space-y-4">
-      <Tabs defaultValue="30d" value={timeRange} onValueChange={setTimeRange} className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Analíticas del Sitio</h2>
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total de visitantes */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Total de Visitantes
+            </CardTitle>
+            <div className={`text-xs font-medium ${visitorsChange > 0 ? 'text-green-500' : 'text-red-500'}`}>
+              {visitorsChange > 0 ? <ArrowUpRight className="h-3 w-3 inline mr-1" /> : <ArrowDownRight className="h-3 w-3 inline mr-1" />}
+              {Math.abs(visitorsChange)}%
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalVisitors}</div>
+            <p className="text-xs text-muted-foreground">
+              Últimos 7 días
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Total de páginas vistas */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Páginas Vistas
+            </CardTitle>
+            <div className={`text-xs font-medium ${pageViewsChange > 0 ? 'text-green-500' : 'text-red-500'}`}>
+              {pageViewsChange > 0 ? <ArrowUpRight className="h-3 w-3 inline mr-1" /> : <ArrowDownRight className="h-3 w-3 inline mr-1" />}
+              {Math.abs(pageViewsChange)}%
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalPageViews}</div>
+            <p className="text-xs text-muted-foreground">
+              Últimos 7 días
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Tasa de rebote */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Tasa de Rebote
+            </CardTitle>
+            <div className={`text-xs font-medium ${bounceRateChange < 0 ? 'text-green-500' : 'text-red-500'}`}>
+              {bounceRateChange < 0 ? <ArrowDownRight className="h-3 w-3 inline mr-1" /> : <ArrowUpRight className="h-3 w-3 inline mr-1" />}
+              {Math.abs(bounceRateChange)}%
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">42%</div>
+            <p className="text-xs text-muted-foreground">
+              Usuarios que abandonan inmediatamente
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Duración media */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Duración Media
+            </CardTitle>
+            <div className={`text-xs font-medium ${avgSessionChange > 0 ? 'text-green-500' : 'text-red-500'}`}>
+              {avgSessionChange > 0 ? <ArrowUpRight className="h-3 w-3 inline mr-1" /> : <ArrowDownRight className="h-3 w-3 inline mr-1" />}
+              {Math.abs(avgSessionChange)}%
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">2m 13s</div>
+            <p className="text-xs text-muted-foreground">
+              Tiempo promedio por sesión
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="visitors">
+        <div className="flex justify-between items-start">
           <TabsList>
-            <TabsTrigger value="7d">7 días</TabsTrigger>
-            <TabsTrigger value="15d">15 días</TabsTrigger>
-            <TabsTrigger value="30d">30 días</TabsTrigger>
+            <TabsTrigger value="visitors">Visitantes</TabsTrigger>
+            <TabsTrigger value="pageviews">Páginas vistas</TabsTrigger>
           </TabsList>
+          <div className="text-sm text-muted-foreground">
+            Últimos 7 días
+          </div>
         </div>
         
-        {/* KPI Cards */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Visitas</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalVisits.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className={growthRate >= 0 ? "text-green-500" : "text-red-500"}>
-                  {growthRate >= 0 ? "+" : ""}{growthRate.toFixed(1)}%
-                </span>{" "}
-                desde hace un mes
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Visitantes Únicos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalUniqueVisitors.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                {(totalUniqueVisitors / totalVisits * 100).toFixed(1)}% del total de visitas
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Promedio Diario</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {Math.round(totalVisits / visitsData.length).toLocaleString()}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Visitas por día
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-        
-        {/* Main Chart */}
-        <TabsContent value="7d" className="space-y-4">
+        <TabsContent value="visitors" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Visitas (Últimos 7 días)</CardTitle>
+              <CardTitle>Tendencia de visitantes</CardTitle>
               <CardDescription>
-                Análisis de visitas al sitio web en la última semana
+                Visitantes únicos por día
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-2">
+            <CardContent>
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={visitsData.slice(-7)}>
-                    <defs>
-                      <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={colors.primary} stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor={colors.primary} stopOpacity={0.1}/>
-                      </linearGradient>
-                      <linearGradient id="colorUniqueVisitors" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={colors.secondary} stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor={colors.secondary} stopOpacity={0.1}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
-                    <XAxis dataKey="date" />
+                  <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
+                    <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
-                    <Legend />
-                    <Area
-                      type="monotone"
-                      dataKey="visits"
-                      stroke={colors.primary}
-                      fillOpacity={1}
-                      fill="url(#colorVisits)"
-                      name="Visitas Totales"
+                    <Line 
+                      type="monotone" 
+                      dataKey="visitors" 
+                      stroke="#a72a2a" 
+                      name="Visitantes"
+                      strokeWidth={2} 
+                      dot={{ r: 4 }}
+                      activeDot={{ r: 6 }}
                     />
-                    <Area
-                      type="monotone"
-                      dataKey="uniqueVisitors"
-                      stroke={colors.secondary}
-                      fillOpacity={1}
-                      fill="url(#colorUniqueVisitors)"
-                      name="Visitantes Únicos"
-                    />
-                  </AreaChart>
+                  </LineChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
         
-        <TabsContent value="15d" className="space-y-4">
+        <TabsContent value="pageviews" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Visitas (Últimos 15 días)</CardTitle>
+              <CardTitle>Tendencia de páginas vistas</CardTitle>
               <CardDescription>
-                Análisis de visitas al sitio web en las últimas dos semanas
+                Total de páginas vistas por día
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-2">
+            <CardContent>
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={visitsData.slice(-15)}>
-                    <defs>
-                      <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={colors.primary} stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor={colors.primary} stopOpacity={0.1}/>
-                      </linearGradient>
-                      <linearGradient id="colorUniqueVisitors" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={colors.secondary} stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor={colors.secondary} stopOpacity={0.1}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
-                    <XAxis dataKey="date" />
+                  <BarChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
+                    <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
-                    <Legend />
-                    <Area
-                      type="monotone"
-                      dataKey="visits"
-                      stroke={colors.primary}
-                      fillOpacity={1}
-                      fill="url(#colorVisits)"
-                      name="Visitas Totales"
+                    <Bar 
+                      dataKey="pageViews" 
+                      fill="#a72a2a" 
+                      name="Páginas vistas"
+                      radius={[4, 4, 0, 0]}
                     />
-                    <Area
-                      type="monotone"
-                      dataKey="uniqueVisitors"
-                      stroke={colors.secondary}
-                      fillOpacity={1}
-                      fill="url(#colorUniqueVisitors)"
-                      name="Visitantes Únicos"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="30d" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Visitas (Últimos 30 días)</CardTitle>
-              <CardDescription>
-                Análisis de visitas al sitio web en el último mes
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={visitsData}>
-                    <defs>
-                      <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={colors.primary} stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor={colors.primary} stopOpacity={0.1}/>
-                      </linearGradient>
-                      <linearGradient id="colorUniqueVisitors" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={colors.secondary} stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor={colors.secondary} stopOpacity={0.1}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Area
-                      type="monotone"
-                      dataKey="visits"
-                      stroke={colors.primary}
-                      fillOpacity={1}
-                      fill="url(#colorVisits)"
-                      name="Visitas Totales"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="uniqueVisitors"
-                      stroke={colors.secondary}
-                      fillOpacity={1}
-                      fill="url(#colorUniqueVisitors)"
-                      name="Visitantes Únicos"
-                    />
-                  </AreaChart>
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-      
-      {/* Traffic Sources and Devices */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Fuentes de Tráfico</CardTitle>
-            <CardDescription>
-              De dónde vienen los visitantes
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={trafficSourcesData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="value" name="Porcentaje" fill={colors.primary} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Dispositivos</CardTitle>
-            <CardDescription>
-              Tipos de dispositivos utilizados
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={devicesData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="value" name="Porcentaje" fill={colors.secondary} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }
