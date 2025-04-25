@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2, CheckCircle } from "lucide-react";
 
 interface Ebook {
@@ -13,52 +13,50 @@ interface Ebook {
 }
 
 export default function Ebook() {
-  const [ebook, setEbook] = useState<Ebook | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Fetch ebook data from the API
-    const fetchEbook = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch('/api/ebook');
-        
-        if (!response.ok) {
-          if (response.status === 404) {
-            // No ebook found, use default data
-            setEbook({
-              id: 0,
-              title: "Descarga mi E-Book",
-              description: "\"Vínculos Digitales: Encontrar conexiones auténticas en la era de las relaciones virtuales\" es mi nuevo E-Book donde comparto reflexiones y estrategias para cultivar relaciones significativas en un mundo hiperconectado.",
-              coverImage: "/assets/ebecdf83-957e-4c03-a0f1-1fd610cf3b3a.jpeg",
-              price: "$19.99",
-              buyLink: "#",
-              features: [
-                "Estrategias para reconocer relaciones saludables",
-                "Cómo superar la idealización en las relaciones digitales",
-                "Herramientas para comunicarte efectivamente en línea"
-              ]
-            });
-            setError(null);
-            return;
-          }
-          throw new Error('Error al cargar información del e-book');
+  // Usando React Query para obtener los datos del ebook - esto mejorará la sincronización con el panel admin
+  const { 
+    data: ebook, 
+    isLoading, 
+    error 
+  } = useQuery({
+    queryKey: ['/api/ebook'],
+    queryFn: async () => {
+      // Añadimos timestamp para evitar el caché del navegador
+      const timestamp = Date.now();
+      const response = await fetch(`/api/ebook?_t=${timestamp}`, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
-        
-        const data = await response.json();
-        setEbook(data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching ebook data:', err);
-        setError('No se pudo cargar la información del e-book.');
-      } finally {
-        setIsLoading(false);
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          // No ebook found, return default data
+          return {
+            id: 0,
+            title: "Descarga mi E-Book",
+            description: "\"Vínculos Digitales: Encontrar conexiones auténticas en la era de las relaciones virtuales\" es mi nuevo E-Book donde comparto reflexiones y estrategias para cultivar relaciones significativas en un mundo hiperconectado.",
+            coverImage: "/assets/ebecdf83-957e-4c03-a0f1-1fd610cf3b3a.jpeg",
+            price: "$19.99",
+            buyLink: "#",
+            features: [
+              "Estrategias para reconocer relaciones saludables",
+              "Cómo superar la idealización en las relaciones digitales",
+              "Herramientas para comunicarte efectivamente en línea"
+            ]
+          } as Ebook;
+        }
+        throw new Error('Error al cargar información del e-book');
       }
-    };
-
-    fetchEbook();
-  }, []);
+      
+      return response.json() as Promise<Ebook>;
+    },
+    // Refrescar los datos más frecuentemente para ver los cambios del admin
+    refetchInterval: 30000, // refrescar cada 30 segundos
+    staleTime: 15000, // considerar los datos obsoletos después de 15 segundos
+  });
 
   if (isLoading) {
     return (
