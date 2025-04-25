@@ -78,7 +78,7 @@ export default function BlogPage() {
     slug: '',
     content: '',
     excerpt: '',
-    coverImage: '',
+    featuredImage: '',
     published: true,
   };
   
@@ -278,7 +278,7 @@ export default function BlogPage() {
       slug: post.slug,
       content: post.content,
       excerpt: post.excerpt || '',
-      coverImage: post.coverImage || '',
+      featuredImage: post.featuredImage || '',
       published: post.published,
     });
     setIsEditDialogOpen(true);
@@ -371,11 +371,11 @@ export default function BlogPage() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="coverImage">URL de imagen de portada</Label>
+                    <Label htmlFor="featuredImage">URL de imagen de portada</Label>
                     <Input
-                      id="coverImage"
-                      name="coverImage"
-                      value={formData.coverImage}
+                      id="featuredImage"
+                      name="featuredImage"
+                      value={formData.featuredImage}
                       onChange={handleInputChange}
                       placeholder="https://ejemplo.com/imagen.jpg"
                     />
@@ -518,11 +518,11 @@ export default function BlogPage() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="edit-coverImage">URL de imagen de portada</Label>
+                <Label htmlFor="edit-featuredImage">URL de imagen de portada</Label>
                 <Input
-                  id="edit-coverImage"
-                  name="coverImage"
-                  value={formData.coverImage}
+                  id="edit-featuredImage"
+                  name="featuredImage"
+                  value={formData.featuredImage}
                   onChange={handleInputChange}
                   placeholder="https://ejemplo.com/imagen.jpg"
                 />
@@ -645,10 +645,10 @@ export default function BlogPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
           <Card key={post.id} className="overflow-hidden">
-            {post.coverImage && (
+            {post.featuredImage && (
               <div className="aspect-video w-full overflow-hidden">
                 <img
-                  src={post.coverImage}
+                  src={post.featuredImage}
                   alt={post.title}
                   className="w-full h-full object-cover transition-transform hover:scale-105"
                 />
