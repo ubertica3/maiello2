@@ -13,6 +13,7 @@ import {
   X,
   LogOut,
   ChevronDown,
+  BookOpen,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -71,6 +72,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       href: '/admin/blog',
       icon: <FileText size={20} />,
       label: 'Blog',
+    },
+    {
+      href: '/admin/ebook',
+      icon: <BookOpen size={20} />,
+      label: 'E-book',
     },
     {
       href: '/admin/subscribers',

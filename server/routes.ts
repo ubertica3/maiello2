@@ -6,6 +6,7 @@ import {
   insertContactSchema, 
   insertEventSchema, 
   insertBlogPostSchema,
+  insertEbookSchema,
   events,
   blogPosts 
 } from "@shared/schema";
@@ -89,6 +90,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching blog posts:", error);
       res.status(500).json({ message: "Error al obtener posts del blog" });
+    }
+  });
+  
+  // Get ebook information
+  app.get("/api/ebook", async (req, res) => {
+    try {
+      const ebook = await storage.getEbook();
+      
+      if (!ebook) {
+        return res.status(404).json({ message: "E-book no encontrado" });
+      }
+      
+      res.status(200).json(ebook);
+    } catch (error) {
+      console.error("Error fetching ebook:", error);
+      res.status(500).json({ message: "Error al obtener información del e-book" });
     }
   });
   
@@ -357,6 +374,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting blog post:", error);
       res.status(500).json({ message: "Error al eliminar post" });
+    }
+  });
+  
+  // Ebook management
+  app.get("/api/admin/ebook", isAdmin, async (req, res) => {
+    try {
+      const ebook = await storage.getEbook();
+      res.status(200).json(ebook || {});
+    } catch (error) {
+      console.error("Error fetching ebook:", error);
+      res.status(500).json({ message: "Error al obtener información del e-book" });
+    }
+  });
+  
+  app.put("/api/admin/ebook", isAdmin, async (req, res) => {
+    try {
+      const validatedData = insertEbookSchema.partial().parse(req.body);
+      
+      const updatedEbook = await storage.updateEbook(validatedData);
+      
+      res.status(200).json({
+        message: "E-book actualizado con éxito",
+        ebook: updatedEbook
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error del servidor" });
+      }
     }
   });
   
