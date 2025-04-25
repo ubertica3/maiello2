@@ -5,7 +5,7 @@ export default function About() {
         <div className="flex flex-col md:flex-row items-center gap-12">
           <div className="md:w-1/2" data-aos="fade-right" data-aos-duration="1000">
             <img 
-              src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=900&q=80" 
+              src="/images/2b6fddd6-ca57-45e2-87d6-53e37a76662a.jpeg" 
               alt="Leo Maiello psicólogo" 
               className="rounded-lg shadow-xl w-full h-auto object-cover transform transition-transform hover:scale-105 duration-500"
             />

@@ -22,7 +22,7 @@ export default function Events() {
       date: "15",
       month: "JUN",
       time: "20:00 hs",
-      image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+      image: "/images/13.jpeg",
       ticketUrl: "#"
     },
     {
@@ -33,7 +33,7 @@ export default function Events() {
       date: "22",
       month: "JUL",
       time: "19:30 hs",
-      image: "https://images.unsplash.com/photo-1560439513-74b037a25d84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+      image: "/images/9.jpeg",
       ticketUrl: "#"
     },
     {
@@ -44,7 +44,7 @@ export default function Events() {
       date: "8",
       month: "AGO",
       time: "18:00 hs",
-      image: "https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+      image: "/images/7.jpeg",
       ticketUrl: "#"
     }
   ]);

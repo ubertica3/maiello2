@@ -74,32 +74,32 @@ export default function Social() {
   const [instagramPosts] = useState<InstagramPost[]>([
     {
       id: 1,
-      image: "https://images.unsplash.com/photo-1569437061238-3cf1347cd92e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300&q=80",
+      image: "/images/1ae3d7cd-3c35-4a05-b3e8-0f0bc456ae7f.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 2,
-      image: "https://images.unsplash.com/photo-1532635241-17e820acc59f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300&q=80",
+      image: "/images/40e32192-445e-4f87-ab03-5b5411846ccf.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 3,
-      image: "https://images.unsplash.com/photo-1518744744590-40f2466560ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300&q=80",
+      image: "/images/6d25d542-2bea-4f9b-b5ec-d837024f7593.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 4,
-      image: "https://images.unsplash.com/photo-1516302752625-fcc3c50ae61f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300&q=80",
+      image: "/images/efcffbc0-db1c-4d5c-982f-b8b6a2d066f1.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 5,
-      image: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300&q=80",
+      image: "/images/15.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     },
     {
       id: 6,
-      image: "https://images.unsplash.com/photo-1632307870906-dd18dcbdeea9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300&q=80",
+      image: "/images/19.jpeg",
       link: "https://www.instagram.com/soyleopsicologo/"
     }
   ]);
