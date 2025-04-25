@@ -136,6 +136,33 @@ export const insertSiteSettingsSchema = createInsertSchema(siteSettings).pick({
 export type InsertSiteSettings = z.infer<typeof insertSiteSettingsSchema>;
 export type SiteSettings = typeof siteSettings.$inferSelect;
 
+// Ebook table
+export const ebooks = pgTable("ebooks", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  coverImage: text("cover_image").notNull(),
+  price: text("price").notNull(),
+  salePrice: text("sale_price"),
+  buyLink: text("buy_link").notNull(),
+  features: json("features").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const insertEbookSchema = createInsertSchema(ebooks).pick({
+  title: true,
+  description: true,
+  coverImage: true,
+  price: true,
+  salePrice: true,
+  buyLink: true,
+  features: true
+});
+
+export type InsertEbook = z.infer<typeof insertEbookSchema>;
+export type Ebook = typeof ebooks.$inferSelect;
+
 // Relations
 export const blogPostsRelations = relations(blogPosts, ({ one }) => ({
   author: one(users, {

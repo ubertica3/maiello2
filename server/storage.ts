@@ -4,7 +4,8 @@ import {
   contacts, type Contact, type InsertContact,
   events, type Event, type InsertEvent,
   blogPosts, type BlogPost, type InsertBlogPost,
-  siteSettings, type SiteSettings, type InsertSiteSettings
+  siteSettings, type SiteSettings, type InsertSiteSettings,
+  ebooks, type Ebook, type InsertEbook
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, sql } from "drizzle-orm";
@@ -52,6 +53,10 @@ export interface IStorage {
   // Site settings methods
   getSiteSettings(section: string): Promise<SiteSettings | undefined>;
   updateSiteSettings(section: string, settings: any): Promise<SiteSettings | undefined>;
+  
+  // Ebook methods
+  getEbook(): Promise<Ebook | undefined>;
+  updateEbook(ebookData: Partial<InsertEbook>): Promise<Ebook | undefined>;
   
   // Session store for auth
   sessionStore: SessionStore;
@@ -226,6 +231,44 @@ export class DatabaseStorage implements IStorage {
       // Create new settings
       const result = await db.insert(siteSettings)
         .values({ section, settings })
+        .returning();
+      return result[0];
+    }
+  }
+  
+  // Ebook methods
+  async getEbook(): Promise<Ebook | undefined> {
+    const result = await db.select().from(ebooks);
+    // We only support one ebook at the moment, so return the first one
+    return result[0];
+  }
+  
+  async updateEbook(ebookData: Partial<InsertEbook>): Promise<Ebook | undefined> {
+    // Get the existing ebook
+    const existing = await this.getEbook();
+    
+    if (existing) {
+      // Update existing ebook
+      const result = await db.update(ebooks)
+        .set({ 
+          ...ebookData,
+          updatedAt: new Date()
+        })
+        .where(eq(ebooks.id, existing.id))
+        .returning();
+      return result[0];
+    } else {
+      // Create new ebook if it doesn't exist
+      const result = await db.insert(ebooks)
+        .values({ 
+          title: ebookData.title || "Título del E-book",
+          description: ebookData.description || "Descripción del E-book",
+          coverImage: ebookData.coverImage || "/assets/ebook-cover.jpg",
+          price: ebookData.price || "$0",
+          salePrice: ebookData.salePrice,
+          buyLink: ebookData.buyLink || "#",
+          features: ebookData.features || []
+        })
         .returning();
       return result[0];
     }
