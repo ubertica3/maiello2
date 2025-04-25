@@ -3,6 +3,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import AdminLayout from '@/components/admin/admin-layout';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
+import { ImageUpload } from '@/components/admin/image-upload';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Save, Plus, Trash } from 'lucide-react';
+import { Loader2, Save, Plus, Trash, ArrowLeft } from 'lucide-react';
 
 type Ebook = {
   id: number;

@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -12,10 +12,15 @@ import {
 } from "@shared/schema";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { eq } from "drizzle-orm";
+import { upload, handleMulterError } from "./upload";
+import path from "path";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   setupAuth(app);
+  
+  // Configurar middleware para el manejo de errores de multer
+  app.use(handleMulterError);
   
   // Public API routes
   
@@ -438,6 +443,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating settings:", error);
       res.status(500).json({ message: "Error al actualizar configuración" });
+    }
+  });
+  
+  // Subida de imágenes
+  app.post("/api/admin/upload", isAdmin, upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No se ha subido ninguna imagen" });
+      }
+      
+      // Construir la URL relativa para la imagen
+      const fileUrl = `/uploads/${path.basename(req.file.path)}`;
+      
+      res.status(200).json({
+        message: "Imagen subida con éxito",
+        url: fileUrl,
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      res.status(500).json({ message: "Error al subir la imagen" });
     }
   });
 
