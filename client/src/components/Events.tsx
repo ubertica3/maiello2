@@ -91,7 +91,7 @@ export default function Events() {
                         MP
                       </a>
                       <a 
-                        href={event.paypalTicketUrl || event.ticketUrl || "#"} 
+                        href={event.ticketUrl || "#"} 
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-3 py-1 bg-[#0070ba] text-white rounded-md text-sm hover:bg-[#003087] transition-colors flex items-center"
