@@ -69,16 +69,44 @@ export default function Events() {
                 <div className="p-6">
                   <h3 className="font-heading font-bold text-xl mb-2">{event.title}</h3>
                   <p className="text-gray-700 mb-4">{event.venue} - {event.location}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-500">{event.time}</span>
-                    <a 
-                      href={event.ticketUrl} 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:text-secondary font-medium transition-colors duration-300 hover:underline"
-                    >
-                      Comprar entradas →
-                    </a>
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500">{event.time}</span>
+                    </div>
+                    <div className="flex justify-end gap-2 mt-1">
+                      <a 
+                        href={event.ticketUrl || "#"} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1 bg-[#009ee3] text-white rounded-md text-sm hover:bg-[#007eb5] transition-colors flex items-center"
+                      >
+                        <img 
+                          src="/assets/mp-logo.svg" 
+                          alt="MercadoPago" 
+                          className="h-4 mr-1 inline"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                        MP
+                      </a>
+                      <a 
+                        href={event.paypalTicketUrl || event.ticketUrl || "#"} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1 bg-[#0070ba] text-white rounded-md text-sm hover:bg-[#003087] transition-colors flex items-center"
+                      >
+                        <img 
+                          src="/assets/paypal-logo.svg" 
+                          alt="PayPal" 
+                          className="h-4 mr-1 inline"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                        PayPal
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

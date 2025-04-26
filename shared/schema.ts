@@ -75,6 +75,7 @@ export const events = pgTable("events", {
   time: text("time").notNull(),
   image: text("image").notNull(),
   ticketUrl: text("ticket_url").notNull(),
+  paypalTicketUrl: text("paypal_ticket_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
@@ -87,7 +88,8 @@ export const insertEventSchema = createInsertSchema(events).pick({
   month: true,
   time: true,
   image: true,
-  ticketUrl: true
+  ticketUrl: true,
+  paypalTicketUrl: true
 });
 
 export type InsertEvent = z.infer<typeof insertEventSchema>;
@@ -145,6 +147,7 @@ export const ebooks = pgTable("ebooks", {
   price: text("price").notNull(),
   salePrice: text("sale_price"),
   buyLink: text("buy_link").notNull(),
+  paypalBuyLink: text("paypal_buy_link"),
   features: json("features").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -157,6 +160,7 @@ export const insertEbookSchema = createInsertSchema(ebooks).pick({
   price: true,
   salePrice: true,
   buyLink: true,
+  paypalBuyLink: true,
   features: true
 });
 
