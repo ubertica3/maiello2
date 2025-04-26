@@ -27,7 +27,6 @@ type Ebook = {
   price: string;
   salePrice?: string;
   buyLink: string;
-  paypalBuyLink?: string;
   features: string[];
   createdAt: string;
   updatedAt: string;
@@ -44,7 +43,6 @@ export default function EbookPage() {
     price: '',
     salePrice: '',
     buyLink: '',
-    paypalBuyLink: '',
     features: []
   });
   const [newFeature, setNewFeature] = useState('');
@@ -74,7 +72,6 @@ export default function EbookPage() {
         price: ebook.price,
         salePrice: ebook.salePrice || '',
         buyLink: ebook.buyLink,
-        paypalBuyLink: ebook.paypalBuyLink || '',
         features: Array.isArray(ebook.features) ? ebook.features : []
       });
     }
@@ -253,25 +250,14 @@ export default function EbookPage() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="buyLink">Enlace de Compra MercadoPago</Label>
+                  <Label htmlFor="buyLink">Enlace de Compra</Label>
                   <Input
                     id="buyLink"
                     name="buyLink"
                     value={formData.buyLink}
                     onChange={handleInputChange}
-                    placeholder="URL para comprar con MercadoPago"
+                    placeholder="URL para comprar el e-book"
                     required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="paypalBuyLink">Enlace de Compra PayPal</Label>
-                  <Input
-                    id="paypalBuyLink"
-                    name="paypalBuyLink"
-                    value={formData.paypalBuyLink}
-                    onChange={handleInputChange}
-                    placeholder="URL para comprar con PayPal"
                   />
                 </div>
               </CardContent>
