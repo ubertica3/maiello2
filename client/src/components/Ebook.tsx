@@ -106,16 +106,44 @@ export default function Ebook() {
                 <span className="text-2xl font-bold">{ebook.price}</span>
               )}
             </div>
-            <a 
-              href={ebook.buyLink} 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-white text-primary hover:bg-gray-100 font-bold py-3 px-8 rounded-full transition-colors transform hover:scale-105 hover:shadow-lg"
-              data-aos="zoom-in" 
-              data-aos-delay="400"
-            >
-              Comprar Ahora
-            </a>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a 
+                href={ebook.buyLink} 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center bg-white hover:bg-gray-100 text-primary font-bold py-3 px-6 rounded-full transition-colors transform hover:scale-105 hover:shadow-lg"
+                data-aos="zoom-in" 
+                data-aos-delay="400"
+              >
+                <img 
+                  src="/assets/mp-logo.svg" 
+                  alt="MercadoPago" 
+                  className="h-5 mr-2"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+                <span>Comprar con MP</span>
+              </a>
+              <a 
+                href={ebook.paypalBuyLink || ebook.buyLink} 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center bg-[#0070ba] hover:bg-[#003087] text-white font-bold py-3 px-6 rounded-full transition-colors transform hover:scale-105 hover:shadow-lg"
+                data-aos="zoom-in" 
+                data-aos-delay="450"
+              >
+                <img 
+                  src="/assets/paypal-logo.svg" 
+                  alt="PayPal" 
+                  className="h-5 mr-2"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+                <span>Comprar con PayPal</span>
+              </a>
+            </div>
           </div>
           <div 
             className="md:w-3/5 order-1 md:order-2 flex justify-center"
