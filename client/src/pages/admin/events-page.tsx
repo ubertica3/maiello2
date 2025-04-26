@@ -37,6 +37,7 @@ type Event = {
   time: string;
   image: string;
   ticketUrl: string;
+  paypalTicketUrl?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -52,6 +53,7 @@ const emptyEventForm: EventFormData = {
   time: '',
   image: '',
   ticketUrl: '',
+  paypalTicketUrl: '',
 };
 
 export default function EventsPage() {
@@ -181,6 +183,7 @@ export default function EventsPage() {
       time: event.time,
       image: event.image,
       ticketUrl: event.ticketUrl,
+      paypalTicketUrl: event.paypalTicketUrl || '',
     });
     setIsEditDialogOpen(true);
   };
@@ -327,14 +330,25 @@ export default function EventsPage() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="ticketUrl">URL de Compra</Label>
+                    <Label htmlFor="ticketUrl">URL de Compra MercadoPago</Label>
                     <Input
                       id="ticketUrl"
                       name="ticketUrl"
                       value={formData.ticketUrl}
                       onChange={handleInputChange}
-                      placeholder="URL para comprar entradas"
+                      placeholder="URL para comprar entradas con MercadoPago"
                       required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="paypalTicketUrl">URL de Compra PayPal (opcional)</Label>
+                    <Input
+                      id="paypalTicketUrl"
+                      name="paypalTicketUrl"
+                      value={formData.paypalTicketUrl}
+                      onChange={handleInputChange}
+                      placeholder="URL para comprar entradas con PayPal"
                     />
                   </div>
                   
@@ -521,13 +535,24 @@ export default function EventsPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="edit-ticketUrl">URL de Compra</Label>
+              <Label htmlFor="edit-ticketUrl">URL de Compra MercadoPago</Label>
               <Input
                 id="edit-ticketUrl"
                 name="ticketUrl"
                 value={formData.ticketUrl}
                 onChange={handleInputChange}
                 required
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="edit-paypalTicketUrl">URL de Compra PayPal (opcional)</Label>
+              <Input
+                id="edit-paypalTicketUrl"
+                name="paypalTicketUrl"
+                value={formData.paypalTicketUrl}
+                onChange={handleInputChange}
+                placeholder="URL para comprar entradas con PayPal"
               />
             </div>
             

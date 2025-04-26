@@ -9,6 +9,7 @@ interface Ebook {
   price: string;
   salePrice?: string;
   buyLink: string;
+  paypalBuyLink?: string;
   features: string[];
 }
 
@@ -41,6 +42,7 @@ export default function Ebook() {
             coverImage: "/assets/ebecdf83-957e-4c03-a0f1-1fd610cf3b3a.jpeg",
             price: "$19.99",
             buyLink: "#",
+            paypalBuyLink: "#",
             features: [
               "Estrategias para reconocer relaciones saludables",
               "Cómo superar la idealización en las relaciones digitales",
