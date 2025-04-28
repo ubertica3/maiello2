@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import AdminLayout from "@/components/admin/admin-layout";
+import AdminLayoutExtended from "@/components/admin/admin-layout-extended";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -257,7 +257,7 @@ export default function InterviewsPage() {
   };
   
   return (
-    <AdminLayout
+    <AdminLayoutExtended
       title="Administrar Entrevistas"
       description="Gestiona las entrevistas que aparecen en tu sitio web"
       backButton={true}
@@ -625,6 +625,6 @@ export default function InterviewsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </AdminLayout>
+    </AdminLayoutExtended>
   );
 }

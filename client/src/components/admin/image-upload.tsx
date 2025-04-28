@@ -6,7 +6,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 
 interface ImageUploadProps {
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
 }
 
@@ -45,9 +45,9 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await apiRequest('POST', '/api/admin/upload', formData, {
-        headers: {},
-        skipContentType: true
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData
       });
 
       const data = await response.json();
