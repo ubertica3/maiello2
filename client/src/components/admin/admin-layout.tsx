@@ -14,6 +14,8 @@ import {
   LogOut,
   ChevronDown,
   BookOpen,
+  Image,
+  Video,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -62,6 +64,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       href: '/admin/dashboard',
       icon: <LayoutDashboard size={20} />,
       label: 'Dashboard',
+    },
+    {
+      href: '/admin/hero',
+      icon: <Image size={20} />,
+      label: 'Hero',
+    },
+    {
+      href: '/admin/interviews',
+      icon: <Video size={20} />,
+      label: 'Entrevistas',
     },
     {
       href: '/admin/events',

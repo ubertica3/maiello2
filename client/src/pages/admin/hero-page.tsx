@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import AdminLayout from "@/components/admin/admin-layout";
+import AdminLayoutExtended from "@/components/admin/admin-layout-extended";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -126,7 +126,7 @@ export default function HeroPage() {
   };
   
   return (
-    <AdminLayout
+    <AdminLayoutExtended
       title="Administrar Hero"
       description="Personaliza la primera sección que ven los visitantes"
       backButton={true}
@@ -345,6 +345,6 @@ export default function HeroPage() {
           <p className="mt-2 text-sm text-muted-foreground">Vista previa de cómo se verá la sección Hero</p>
         </div>
       </div>
-    </AdminLayout>
+    </AdminLayoutExtended>
   );
 }
