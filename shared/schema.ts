@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, date, varchar, json, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, date, varchar, json, pgEnum, real } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -174,3 +174,61 @@ export const blogPostsRelations = relations(blogPosts, ({ one }) => ({
 export const usersRelations = relations(users, ({ many }) => ({
   posts: many(blogPosts)
 }));
+
+// Hero section table
+export const heroSettings = pgTable("hero_settings", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  backgroundImage: text("background_image").notNull(),
+  buttonText1: text("button_text_1"),
+  buttonLink1: text("button_link_1"),
+  buttonText2: text("button_text_2"),
+  buttonLink2: text("button_link_2"),
+  imagePosition: text("image_position").default("center center"),
+  imageScale: real("image_scale").default(1.0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const insertHeroSettingsSchema = createInsertSchema(heroSettings).pick({
+  title: true,
+  subtitle: true,
+  backgroundImage: true,
+  buttonText1: true,
+  buttonLink1: true,
+  buttonText2: true,
+  buttonLink2: true,
+  imagePosition: true,
+  imageScale: true
+});
+
+export type InsertHeroSettings = z.infer<typeof insertHeroSettingsSchema>;
+export type HeroSettings = typeof heroSettings.$inferSelect;
+
+// Interviews table
+export const interviews = pgTable("interviews", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  embedUrl: text("embed_url").notNull(),
+  thumbnailImage: text("thumbnail_image"),
+  imagePosition: text("image_position").default("center center"),
+  imageScale: real("image_scale").default(1.0),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const insertInterviewSchema = createInsertSchema(interviews).pick({
+  title: true,
+  description: true,
+  embedUrl: true,
+  thumbnailImage: true,
+  imagePosition: true,
+  imageScale: true,
+  displayOrder: true
+});
+
+export type InsertInterview = z.infer<typeof insertInterviewSchema>;
+export type Interview = typeof interviews.$inferSelect;

@@ -5,7 +5,9 @@ import {
   events, type Event, type InsertEvent,
   blogPosts, type BlogPost, type InsertBlogPost,
   siteSettings, type SiteSettings, type InsertSiteSettings,
-  ebooks, type Ebook, type InsertEbook
+  ebooks, type Ebook, type InsertEbook,
+  heroSettings, type HeroSettings, type InsertHeroSettings,
+  interviews, type Interview, type InsertInterview
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, sql } from "drizzle-orm";
@@ -57,6 +59,17 @@ export interface IStorage {
   // Ebook methods
   getEbook(): Promise<Ebook | undefined>;
   updateEbook(ebookData: Partial<InsertEbook>): Promise<Ebook | undefined>;
+  
+  // Hero settings methods
+  getHeroSettings(): Promise<HeroSettings | undefined>;
+  updateHeroSettings(heroData: Partial<InsertHeroSettings>): Promise<HeroSettings | undefined>;
+  
+  // Interview methods
+  getInterviews(): Promise<Interview[]>;
+  getInterview(id: number): Promise<Interview | undefined>;
+  createInterview(interview: InsertInterview): Promise<Interview>;
+  updateInterview(id: number, interviewData: Partial<InsertInterview>): Promise<Interview | undefined>;
+  deleteInterview(id: number): Promise<boolean>;
   
   // Session store for auth
   sessionStore: SessionStore;
@@ -167,19 +180,19 @@ export class DatabaseStorage implements IStorage {
   
   // Blog post methods
   async getBlogPosts(limit?: number, includeUnpublished = false): Promise<BlogPost[]> {
-    let query = db.select().from(blogPosts);
+    let posts: BlogPost[];
     
     if (!includeUnpublished) {
-      query = query.where(eq(blogPosts.published, true));
+      posts = await db.select().from(blogPosts).where(eq(blogPosts.published, true)).orderBy(desc(blogPosts.createdAt));
+    } else {
+      posts = await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
     }
     
-    query = query.orderBy(desc(blogPosts.createdAt));
-    
-    if (limit) {
-      query = query.limit(limit);
+    if (limit && limit < posts.length) {
+      return posts.slice(0, limit);
     }
     
-    return await query;
+    return posts;
   }
   
   async getBlogPost(id: number): Promise<BlogPost | undefined> {
@@ -272,6 +285,77 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return result[0];
     }
+  }
+  
+  // Hero settings methods
+  async getHeroSettings(): Promise<HeroSettings | undefined> {
+    const result = await db.select().from(heroSettings);
+    // We only support one hero section at the moment, so return the first one
+    return result[0];
+  }
+  
+  async updateHeroSettings(heroData: Partial<InsertHeroSettings>): Promise<HeroSettings | undefined> {
+    // Get the existing hero settings
+    const existing = await this.getHeroSettings();
+    
+    if (existing) {
+      // Update existing hero settings
+      const result = await db.update(heroSettings)
+        .set({ 
+          ...heroData,
+          updatedAt: new Date()
+        })
+        .where(eq(heroSettings.id, existing.id))
+        .returning();
+      return result[0];
+    } else {
+      // Create new hero settings if they don't exist
+      const result = await db.insert(heroSettings)
+        .values({ 
+          title: heroData.title || "Leo Maiello",
+          subtitle: heroData.subtitle || "",
+          backgroundImage: heroData.backgroundImage || "/assets/hero-background.jpg",
+          buttonText1: heroData.buttonText1 || "Próximos Eventos",
+          buttonLink1: heroData.buttonLink1 || "#events",
+          buttonText2: heroData.buttonText2 || "Contacto",
+          buttonLink2: heroData.buttonLink2 || "#contact",
+          imagePosition: heroData.imagePosition || "center center",
+          imageScale: heroData.imageScale || 1.0
+        })
+        .returning();
+      return result[0];
+    }
+  }
+  
+  // Interview methods
+  async getInterviews(): Promise<Interview[]> {
+    return await db.select().from(interviews).orderBy(asc(interviews.displayOrder));
+  }
+  
+  async getInterview(id: number): Promise<Interview | undefined> {
+    const result = await db.select().from(interviews).where(eq(interviews.id, id));
+    return result[0];
+  }
+  
+  async createInterview(insertInterview: InsertInterview): Promise<Interview> {
+    const result = await db.insert(interviews).values(insertInterview).returning();
+    return result[0];
+  }
+  
+  async updateInterview(id: number, interviewData: Partial<InsertInterview>): Promise<Interview | undefined> {
+    const result = await db.update(interviews)
+      .set({ 
+        ...interviewData,
+        updatedAt: new Date()
+      })
+      .where(eq(interviews.id, id))
+      .returning();
+    return result[0];
+  }
+  
+  async deleteInterview(id: number): Promise<boolean> {
+    const result = await db.delete(interviews).where(eq(interviews.id, id)).returning();
+    return result.length > 0;
   }
 }
 
