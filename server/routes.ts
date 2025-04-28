@@ -7,6 +7,8 @@ import {
   insertEventSchema, 
   insertBlogPostSchema,
   insertEbookSchema,
+  insertHeroSettingsSchema,
+  insertInterviewSchema,
   events,
   blogPosts 
 } from "@shared/schema";
@@ -467,6 +469,148 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error uploading image:", error);
       res.status(500).json({ message: "Error al subir la imagen" });
+    }
+  });
+  
+  // API pública para Hero settings
+  app.get("/api/hero", async (req, res) => {
+    try {
+      const heroSettings = await storage.getHeroSettings();
+      
+      if (!heroSettings) {
+        return res.status(404).json({ message: "Configuración de hero no encontrada" });
+      }
+      
+      res.status(200).json(heroSettings);
+    } catch (error) {
+      console.error("Error fetching hero settings:", error);
+      res.status(500).json({ message: "Error al obtener configuración de hero" });
+    }
+  });
+  
+  // API pública para Entrevistas
+  app.get("/api/interviews", async (req, res) => {
+    try {
+      const interviews = await storage.getInterviews();
+      res.status(200).json(interviews);
+    } catch (error) {
+      console.error("Error fetching interviews:", error);
+      res.status(500).json({ message: "Error al obtener entrevistas" });
+    }
+  });
+  
+  // Hero settings management
+  app.get("/api/admin/hero", isAdmin, async (req, res) => {
+    try {
+      const heroSettings = await storage.getHeroSettings();
+      res.status(200).json(heroSettings || {});
+    } catch (error) {
+      console.error("Error fetching hero settings:", error);
+      res.status(500).json({ message: "Error al obtener configuración de hero" });
+    }
+  });
+  
+  app.put("/api/admin/hero", isAdmin, async (req, res) => {
+    try {
+      const validatedData = insertHeroSettingsSchema.partial().parse(req.body);
+      
+      const updatedHeroSettings = await storage.updateHeroSettings(validatedData);
+      
+      res.status(200).json({
+        message: "Configuración de hero actualizada con éxito",
+        heroSettings: updatedHeroSettings
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error del servidor" });
+      }
+    }
+  });
+  
+  // Interviews management
+  app.get("/api/admin/interviews", isAdmin, async (req, res) => {
+    try {
+      const interviews = await storage.getInterviews();
+      res.status(200).json(interviews);
+    } catch (error) {
+      console.error("Error fetching interviews:", error);
+      res.status(500).json({ message: "Error al obtener entrevistas" });
+    }
+  });
+  
+  app.get("/api/admin/interviews/:id", isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const interview = await storage.getInterview(id);
+      
+      if (!interview) {
+        return res.status(404).json({ message: "Entrevista no encontrada" });
+      }
+      
+      res.status(200).json(interview);
+    } catch (error) {
+      console.error("Error fetching interview:", error);
+      res.status(500).json({ message: "Error al obtener entrevista" });
+    }
+  });
+  
+  app.post("/api/admin/interviews", isAdmin, async (req, res) => {
+    try {
+      const validatedData = insertInterviewSchema.parse(req.body);
+      const newInterview = await storage.createInterview(validatedData);
+      
+      res.status(201).json({
+        message: "Entrevista creada con éxito",
+        interview: newInterview
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error del servidor" });
+      }
+    }
+  });
+  
+  app.put("/api/admin/interviews/:id", isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertInterviewSchema.partial().parse(req.body);
+      
+      const updatedInterview = await storage.updateInterview(id, validatedData);
+      
+      if (!updatedInterview) {
+        return res.status(404).json({ message: "Entrevista no encontrada" });
+      }
+      
+      res.status(200).json({
+        message: "Entrevista actualizada con éxito",
+        interview: updatedInterview
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error del servidor" });
+      }
+    }
+  });
+  
+  app.delete("/api/admin/interviews/:id", isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteInterview(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Entrevista no encontrada" });
+      }
+      
+      res.status(200).json({ message: "Entrevista eliminada con éxito" });
+    } catch (error) {
+      console.error("Error deleting interview:", error);
+      res.status(500).json({ message: "Error al eliminar entrevista" });
     }
   });
 
