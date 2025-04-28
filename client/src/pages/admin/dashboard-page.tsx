@@ -16,7 +16,9 @@ import {
   SendHorizontal,
   Settings,
   Plus,
-  ArrowRight
+  ArrowRight,
+  Image,
+  Youtube
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -390,6 +392,88 @@ export default function DashboardPage() {
                             </a>
                           </Link>
                         </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+                  <Card>
+                    <CardHeader>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <CardTitle>Gestión de Hero</CardTitle>
+                          <CardDescription>
+                            Sección principal de bienvenida
+                          </CardDescription>
+                        </div>
+                        <Link href="/admin/hero">
+                          <a>
+                            <Button variant="outline" size="sm" className="gap-1">
+                              <Image className="h-4 w-4" />
+                              <span className="hidden sm:inline">Editar</span>
+                            </Button>
+                          </a>
+                        </Link>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="bg-muted p-4 rounded-lg">
+                          <h4 className="font-medium text-sm mb-1">Personalización</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Modifica la imagen, título y botones de la sección principal de tu sitio web.
+                          </p>
+                        </div>
+                        
+                        <Link href="/admin/hero">
+                          <a>
+                            <Button variant="outline" className="w-full text-left justify-start gap-2">
+                              <Image className="h-4 w-4" />
+                              <span>Editar Hero</span>
+                            </Button>
+                          </a>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <CardTitle>Entrevistas</CardTitle>
+                          <CardDescription>
+                            Videos y entrevistas destacadas
+                          </CardDescription>
+                        </div>
+                        <Link href="/admin/interviews">
+                          <a>
+                            <Button variant="outline" size="sm" className="gap-1">
+                              <Youtube className="h-4 w-4" />
+                              <span className="hidden sm:inline">Gestionar</span>
+                            </Button>
+                          </a>
+                        </Link>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="bg-muted p-4 rounded-lg">
+                          <h4 className="font-medium text-sm mb-1">Contenido Multimedia</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Añade, ordena y gestiona tus entrevistas y contenido de video.
+                          </p>
+                        </div>
+                        
+                        <Link href="/admin/interviews">
+                          <a>
+                            <Button variant="outline" className="w-full text-left justify-start gap-2">
+                              <Youtube className="h-4 w-4" />
+                              <span>Gestionar entrevistas</span>
+                            </Button>
+                          </a>
+                        </Link>
                       </div>
                     </CardContent>
                   </Card>
