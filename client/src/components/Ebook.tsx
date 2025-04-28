@@ -123,9 +123,18 @@ export default function Ebook() {
             data-aos-duration="1000"
           >
             <img 
-              src={ebook.coverImage} 
+              src={ebook.coverImage.startsWith("http") 
+                  ? ebook.coverImage 
+                  : ebook.coverImage.startsWith("/uploads") 
+                    ? ebook.coverImage 
+                    : `/uploads/${ebook.coverImage.replace(/^\//, "")}`} 
               alt={`Portada del E-Book: ${ebook.title}`} 
               className="max-w-full h-auto rounded-lg shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500"
+              onError={(e) => {
+                // Fallback a una imagen de attached_assets si hay error
+                (e.target as HTMLImageElement).src = "/assets/ebecdf83-957e-4c03-a0f1-1fd610cf3b3a.jpeg";
+                console.log("Error cargando imagen de e-book:", ebook.coverImage);
+              }}
             />
           </div>
         </div>

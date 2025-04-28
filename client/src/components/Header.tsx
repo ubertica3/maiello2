@@ -1,17 +1,37 @@
 import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showMobileButton, setShowMobileButton] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      
+      // Mostrar el botón flotante después de un desplazamiento
+      if (window.innerWidth < 768) { // Solo en móviles
+        setShowMobileButton(window.scrollY > 100);
+      }
+    };
+
+    // Comprobamos la anchura inicial para determinar si mostrar el botón
+    if (window.innerWidth < 768) {
+      setShowMobileButton(window.scrollY > 100);
+    }
+
+    // Manejar cambios de tamaño de ventana
+    const handleResize = () => {
+      setShowMobileButton(window.innerWidth < 768 && window.scrollY > 100);
     };
 
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+    
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -24,19 +44,20 @@ export default function Header() {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-sm shadow-md" : "bg-transparent"}`}>
+    <>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-sm shadow-md" : "bg-transparent"}`}>
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <a href="#hero" className="font-heading font-bold text-primary flex items-center">
           <i className="fas fa-heart text-3xl"></i>
         </a>
         
-        {/* Mobile menu button */}
+        {/* Mobile menu button (en header) */}
         <button 
           className="md:hidden text-dark p-2" 
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
         >
-          <i className="fas fa-bars text-xl"></i>
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
         
         {/* Desktop navigation */}
@@ -100,5 +121,17 @@ export default function Header() {
         </div>
       </div>
     </header>
+
+    {/* Botón flotante de menú para móviles */}
+    {showMobileButton && !mobileMenuOpen && (
+      <button 
+        onClick={toggleMobileMenu}
+        className="md:hidden fixed bottom-6 right-6 z-50 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-all duration-300"
+        aria-label="Abrir menú"
+      >
+        <Menu size={24} />
+      </button>
+    )}
+    </>
   );
 }
