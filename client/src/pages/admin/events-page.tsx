@@ -327,21 +327,33 @@ export default function EventsPage() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="ticketUrl">URL de Compra</Label>
+                    <Label htmlFor="ticketUrl">URL de Compra de Entradas</Label>
                     <Input
                       id="ticketUrl"
                       name="ticketUrl"
                       value={formData.ticketUrl}
                       onChange={handleInputChange}
-                      placeholder="URL para comprar entradas"
+                      placeholder="https://www.passline.com/eventos/..."
                       required
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Enlace directo donde los asistentes pueden comprar entradas para este evento
+                    </p>
                   </div>
                   
-                  <DialogFooter>
+                  <DialogFooter className="mt-6">
+                    <Button
+                      variant="outline"
+                      type="button"
+                      onClick={() => setIsCreateDialogOpen(false)}
+                      className="mr-2"
+                    >
+                      Cancelar
+                    </Button>
                     <Button
                       type="submit"
                       disabled={createEventMutation.isPending}
+                      className="px-6"
                     >
                       {createEventMutation.isPending ? (
                         <>
@@ -521,20 +533,33 @@ export default function EventsPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="edit-ticketUrl">URL de Compra</Label>
+              <Label htmlFor="edit-ticketUrl">URL de Compra de Entradas</Label>
               <Input
                 id="edit-ticketUrl"
                 name="ticketUrl"
                 value={formData.ticketUrl}
                 onChange={handleInputChange}
+                placeholder="https://www.passline.com/eventos/..."
                 required
               />
+              <p className="text-xs text-muted-foreground">
+                Enlace directo donde los asistentes pueden comprar entradas para este evento
+              </p>
             </div>
             
-            <DialogFooter>
+            <DialogFooter className="mt-6">
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => setIsEditDialogOpen(false)}
+                className="mr-2"
+              >
+                Cancelar
+              </Button>
               <Button
                 type="submit"
                 disabled={updateEventMutation.isPending}
+                className="px-6"
               >
                 {updateEventMutation.isPending ? (
                   <>
