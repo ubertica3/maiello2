@@ -315,7 +315,7 @@ export default function EventsPage() {
                     <div className="space-y-2">
                       <Label>Subir nueva imagen</Label>
                       <ImageUpload 
-                        onImageUploaded={(imageUrl) => {
+                        onImageUploaded={(imageUrl: string) => {
                           setFormData(prev => ({
                             ...prev,
                             image: imageUrl
@@ -521,7 +521,7 @@ export default function EventsPage() {
               <div className="space-y-2">
                 <Label>Subir nueva imagen</Label>
                 <ImageUpload 
-                  onImageUploaded={(imageUrl) => {
+                  onImageUploaded={(imageUrl: string) => {
                     setFormData(prev => ({
                       ...prev,
                       image: imageUrl

@@ -6,13 +6,20 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 
 interface ImageUploadProps {
-  value: string | undefined;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange?: (value: string) => void;
+  defaultImageUrl?: string;
+  onImageUploaded?: (imageUrl: string) => void;
 }
 
-export function ImageUpload({ value, onChange }: ImageUploadProps) {
+export function ImageUpload({ 
+  value, 
+  onChange, 
+  defaultImageUrl, 
+  onImageUploaded 
+}: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(value);
+  const [previewUrl, setPreviewUrl] = useState(value || defaultImageUrl || '');
   const { toast } = useToast();
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +61,9 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
 
       if (response.ok) {
         setPreviewUrl(data.url);
-        onChange(data.url);
+        if (onChange) onChange(data.url);
+        if (onImageUploaded) onImageUploaded(data.url);
+        
         toast({
           title: 'Imagen subida',
           description: 'La imagen se ha subido correctamente.',
@@ -75,7 +84,8 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
 
   const clearImage = () => {
     setPreviewUrl('');
-    onChange('');
+    if (onChange) onChange('');
+    if (onImageUploaded) onImageUploaded('');
   };
 
   return (
