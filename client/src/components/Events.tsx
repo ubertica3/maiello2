@@ -69,6 +69,12 @@ export default function Events() {
                 <div className="p-6">
                   <h3 className="font-heading font-bold text-xl mb-2">{event.title}</h3>
                   <p className="text-gray-700 mb-4">{event.venue} - {event.location}</p>
+                  
+                  {/* Mostrar precio para el taller */}
+                  {event.title.includes("TALLER") || event.title.includes("VÍNCULOS SANOS") ? (
+                    <p className="text-lg font-semibold text-primary mb-3">Precio: $5.000</p>
+                  ) : null}
+                  
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500">{event.time}</span>
                     <a 
@@ -77,7 +83,9 @@ export default function Events() {
                       rel="noopener noreferrer"
                       className="text-primary hover:text-secondary font-medium transition-colors duration-300 hover:underline"
                     >
-                      Comprar entradas →
+                      {event.title.includes("TALLER") || event.title.includes("VÍNCULOS SANOS") 
+                        ? "Inscribirse →" 
+                        : "Comprar entradas →"}
                     </a>
                   </div>
                 </div>
