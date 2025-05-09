@@ -64,6 +64,7 @@ export default function Header() {
         <nav className="hidden md:flex space-x-6 text-sm font-medium">
           <a href="#about" className="hover:text-primary transition-colors">Sobre Mí</a>
           <a href="#events" className="hover:text-primary transition-colors">Eventos</a>
+          <a href="#workshops" className="hover:text-secondary transition-colors">Talleres</a>
           <a href="#ebook" className="hover:text-primary transition-colors">E-Book</a>
           <a href="#videos" className="hover:text-primary transition-colors">Videos</a>
           <a href="#social" className="hover:text-primary transition-colors">Redes Sociales</a>
@@ -95,6 +96,7 @@ export default function Header() {
         <nav className="flex flex-col space-y-3 text-sm font-medium">
           <a href="#about" className="py-2 hover:text-primary transition-colors" onClick={closeMobileMenu}>Sobre Mí</a>
           <a href="#events" className="py-2 hover:text-primary transition-colors" onClick={closeMobileMenu}>Eventos</a>
+          <a href="#workshops" className="py-2 hover:text-secondary transition-colors" onClick={closeMobileMenu}>Talleres</a>
           <a href="#ebook" className="py-2 hover:text-primary transition-colors" onClick={closeMobileMenu}>E-Book</a>
           <a href="#videos" className="py-2 hover:text-primary transition-colors" onClick={closeMobileMenu}>Videos</a>
           <a href="#social" className="py-2 hover:text-primary transition-colors" onClick={closeMobileMenu}>Redes Sociales</a>

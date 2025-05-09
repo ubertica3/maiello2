@@ -37,6 +37,7 @@ type Event = {
   time: string;
   image: string;
   ticketUrl: string;
+  eventType: "event" | "workshop";
   createdAt: string;
   updatedAt: string;
 };
