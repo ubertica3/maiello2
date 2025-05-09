@@ -7,7 +7,8 @@ import {
   siteSettings, type SiteSettings, type InsertSiteSettings,
   ebooks, type Ebook, type InsertEbook,
   heroSettings, type HeroSettings, type InsertHeroSettings,
-  interviews, type Interview, type InsertInterview
+  interviews, type Interview, type InsertInterview,
+  ebookPurchases, type EbookPurchase, type InsertEbookPurchase
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, sql } from "drizzle-orm";
@@ -70,6 +71,14 @@ export interface IStorage {
   createInterview(interview: InsertInterview): Promise<Interview>;
   updateInterview(id: number, interviewData: Partial<InsertInterview>): Promise<Interview | undefined>;
   deleteInterview(id: number): Promise<boolean>;
+  
+  // Ebook purchase methods
+  getEbookPurchases(): Promise<EbookPurchase[]>;
+  getEbookPurchase(id: number): Promise<EbookPurchase | undefined>;
+  getEbookPurchaseByEmail(email: string): Promise<EbookPurchase[]>;
+  createEbookPurchase(purchase: InsertEbookPurchase): Promise<EbookPurchase>;
+  updateEbookPurchase(id: number, delivered: boolean): Promise<EbookPurchase | undefined>;
+  deleteEbookPurchase(id: number): Promise<boolean>;
   
   // Session store for auth
   sessionStore: SessionStore;
@@ -355,6 +364,42 @@ export class DatabaseStorage implements IStorage {
   
   async deleteInterview(id: number): Promise<boolean> {
     const result = await db.delete(interviews).where(eq(interviews.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Ebook purchase methods
+  async getEbookPurchases(): Promise<EbookPurchase[]> {
+    return await db.select().from(ebookPurchases).orderBy(desc(ebookPurchases.purchaseDate));
+  }
+
+  async getEbookPurchase(id: number): Promise<EbookPurchase | undefined> {
+    const result = await db.select().from(ebookPurchases).where(eq(ebookPurchases.id, id));
+    return result[0];
+  }
+
+  async getEbookPurchaseByEmail(email: string): Promise<EbookPurchase[]> {
+    return await db.select().from(ebookPurchases).where(eq(ebookPurchases.email, email));
+  }
+
+  async createEbookPurchase(insertEbookPurchase: InsertEbookPurchase): Promise<EbookPurchase> {
+    const result = await db.insert(ebookPurchases).values(insertEbookPurchase).returning();
+    return result[0];
+  }
+
+  async updateEbookPurchase(id: number, delivered: boolean): Promise<EbookPurchase | undefined> {
+    const result = await db.update(ebookPurchases)
+      .set({ 
+        delivered,
+        deliveryDate: delivered ? new Date() : null,
+        updatedAt: new Date()
+      })
+      .where(eq(ebookPurchases.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteEbookPurchase(id: number): Promise<boolean> {
+    const result = await db.delete(ebookPurchases).where(eq(ebookPurchases.id, id)).returning();
     return result.length > 0;
   }
 }

@@ -237,3 +237,39 @@ export const insertInterviewSchema = createInsertSchema(interviews).pick({
 
 export type InsertInterview = z.infer<typeof insertInterviewSchema>;
 export type Interview = typeof interviews.$inferSelect;
+
+// Modelo para compradores de ebooks
+export const ebookPurchases = pgTable("ebook_purchases", {
+  id: serial("id").primaryKey(),
+  ebookId: integer("ebook_id").notNull(),
+  name: text("name").notNull(),
+  lastName: text("last_name").notNull(),
+  email: text("email").notNull(),
+  purchaseDate: timestamp("purchase_date").defaultNow().notNull(),
+  paymentReference: text("payment_reference"),
+  delivered: boolean("delivered").default(false).notNull(),
+  deliveryDate: timestamp("delivery_date"),
+  paidAmount: text("paid_amount"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const insertEbookPurchaseSchema = createInsertSchema(ebookPurchases).pick({
+  ebookId: true,
+  name: true,
+  lastName: true,
+  email: true,
+  paymentReference: true,
+  paidAmount: true,
+});
+
+export type InsertEbookPurchase = z.infer<typeof insertEbookPurchaseSchema>;
+export type EbookPurchase = typeof ebookPurchases.$inferSelect;
+
+// Relaciones
+export const ebookPurchasesRelations = relations(ebookPurchases, ({ one }) => ({
+  ebook: one(ebooks, {
+    fields: [ebookPurchases.ebookId],
+    references: [ebooks.id],
+  }),
+}));
