@@ -64,17 +64,17 @@ export default function Hero() {
             </div>
           </div>
         ) : error ? (
-          <div className="flex justify-center mb-10">
+          <div className="flex justify-center items-center h-full mb-10">
             <img 
               src="/assets/images/leo-logo.png" 
               alt="Leo Maiello" 
-              className="h-[70px] md:h-[120px] object-contain"
+              className="w-1/2 max-w-[600px] object-contain"
             />
           </div>
         ) : (
           <>
             <div
-              className="flex justify-center mb-6"
+              className="flex justify-center items-center mb-6"
               data-aos="fade-down"
               data-aos-delay="200"
               data-aos-duration="1000"
@@ -82,7 +82,7 @@ export default function Hero() {
               <img 
                 src="/assets/images/leo-logo.png" 
                 alt="Leo Maiello" 
-                className="h-[70px] md:h-[120px] object-contain"
+                className="w-1/2 max-w-[600px] object-contain"
               />
             </div>
             
