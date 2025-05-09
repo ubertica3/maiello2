@@ -66,7 +66,7 @@ export default function Hero() {
         ) : error ? (
           <div className="flex justify-center mb-10">
             <img 
-              src="/assets/leo_maiello_logo.png" 
+              src="/assets/images/leo-logo.png" 
               alt="Leo Maiello" 
               className="h-[70px] md:h-[120px] object-contain"
             />
@@ -80,7 +80,7 @@ export default function Hero() {
               data-aos-duration="1000"
             >
               <img 
-                src="/assets/leo_maiello_logo.png" 
+                src="/assets/images/leo-logo.png" 
                 alt="Leo Maiello" 
                 className="h-[70px] md:h-[120px] object-contain"
               />
