@@ -49,7 +49,21 @@ export default function Footer() {
               </li>
               <li className="flex items-start" data-aos="fade-up" data-aos-delay="200">
                 <i className="fas fa-phone mt-1 mr-3 text-primary"></i>
-                <a href="tel:+5491136113290" className="hover:text-white transition-colors">+54 9 11 3611-3290</a>
+                <a href="tel:+5491140900877" className="hover:text-white transition-colors">+54 9 11 4090-0877</a>
+              </li>
+              <li className="flex items-start" data-aos="fade-up" data-aos-delay="250">
+                <i className="fab fa-whatsapp mt-1 mr-3 text-primary"></i>
+                <a 
+                  href="https://wa.me/5491140900877/?text=Hola%20Leo!%20Me%20gustaria%20contactarme%20con%20vos." 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-white transition-colors flex items-center"
+                >
+                  Chat por WhatsApp
+                  <span className="ml-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full">
+                    Nuevo
+                  </span>
+                </a>
               </li>
               <li className="flex items-start" data-aos="fade-up" data-aos-delay="300">
                 <i className="fas fa-map-marker-alt mt-1 mr-3 text-primary"></i>

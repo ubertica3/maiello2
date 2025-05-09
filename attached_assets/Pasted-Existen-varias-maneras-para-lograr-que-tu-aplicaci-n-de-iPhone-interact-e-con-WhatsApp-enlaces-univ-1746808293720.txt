@@ -1,0 +1,35 @@
+Existen varias maneras para lograr que tu aplicación de iPhone interactúe con WhatsApp: enlaces universales, esquemas de URL personalizadas, extensión de contenido compartido y la API de interacción con documentos.
+Enlaces universales
+Los enlaces universales son el método preferido para establecer un enlace a una cuenta de WhatsApp.
+Usa https://wa.me/<number> (<number> es un número de teléfono completo en formato internacional). Cuando agregues el número de teléfono en formato internacional, asegúrate de omitir paréntesis, guiones, símbolos de suma y ceros antepuestos.
+Ejemplos:
+Usa: https://wa.me/15551234567
+No uses: https://wa.me/+001-(555)1234567
+Los enlaces universales también pueden incluir un mensaje predeterminado que aparecerá automáticamente en el campo de texto de un chat. Usa https://wa.me/whatsappphonenumber/?text=urlencodedtext (whatsappphonenumber es un número de teléfono completo en formato internacional y URL-encodedtext es el mensaje predeterminado incorporado a la URL).
+Ejemplo: https://wa.me/15551234567?text=I'm%20interested%20in%20your%20car%20for%20sale
+Para crear un enlace solo con un mensaje predeterminado, usa https://wa.me/?text=urlencodedtext.
+Ejemplo: https://wa.me/?text=I'm%20inquiring%20about%20the%20apartment%20listing`
+Esquema de URL personalizada
+Si abres la URL whatsapp:// con alguno de los siguientes parámetros, se abrirá nuestra aplicación y se ejecutará una acción personalizada.
+URL	Parámetros	Abre
+app	-	La aplicación WhatsApp Messenger
+send		El editor de chat nuevo
+texto	Si está presente, este texto se escribirá de forma automática en el campo de texto de una pantalla de conversación.
+La llamada Objective-C que se usa para abrir una de estas URL es la siguiente:
+NSURL *whatsappURL = [NSURL URLWithString:@"whatsapp://send?text=Hello%2C%20World!"]; if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) { [[UIApplication sharedApplication] openURL: whatsappURL]; }
+Si quieres usar -[UIApplication canOpenURL:] para determinar si el iPhone del usuario tiene WhatsApp instalado, asegúrate de incluir el esquema de URL de WhatsApp en el parámetro Info.plist de tu aplicación, específicamente en la clave LSApplicationQueriesSchemes.
+Extensión de contenido compartido
+La extensión de contenido compartido se implementó en iOS 8.0 y proporciona una manera conveniente para que cualquier aplicación pueda compartir contenido con otras aplicaciones instaladas en el iPhone del usuario. Ahora, este es el método preferido de compartir contenido con WhatsApp. La extensión de contenido compartido te permite compartir hasta 30 archivos multimedia combinados. Para usar la extensión de contenido compartido, crea una instancia de UIActivityViewController y preséntala en tu aplicación. WhatsApp acepta los siguientes tipos de contenido:
+Texto (UTI: public.plain-text)
+Fotos (UTI: public.image)
+Videos (UTI: public.movie)
+Notas de audio y archivos de música (UTI: public.audio)
+Documentos PDF (UTI: com.adobe.pdf)
+Tarjetas de contacto (UTI: public.vcard)
+URL web (UTI: public.url)
+Nota: No es posible editar cuando se comparte desde otra aplicación. Si deseas hacer cambios en tus archivos antes de compartirlos, deberás hacerlos en la aplicación.
+Límites de tamaño de los archivos
+Puedes cargar hasta 30 archivos a la vez. Los límites de tamaño de los archivos son los siguientes:
+Todos los archivos: 2 GB
+Videos: 200 MB
+Imágenes: 16 MB

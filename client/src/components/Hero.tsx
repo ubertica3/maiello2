@@ -64,19 +64,27 @@ export default function Hero() {
             </div>
           </div>
         ) : error ? (
-          <h1 className="font-heading text-4xl md:text-6xl font-bold mb-10 leading-tight">
-            Leo Maiello
-          </h1>
+          <div className="flex justify-center mb-10">
+            <img 
+              src="/assets/leo_maiello_logo.png" 
+              alt="Leo Maiello" 
+              className="h-[70px] md:h-[120px] object-contain"
+            />
+          </div>
         ) : (
           <>
-            <h1 
-              className="font-heading text-4xl md:text-6xl font-bold mb-4 leading-tight"
+            <div
+              className="flex justify-center mb-6"
               data-aos="fade-down"
               data-aos-delay="200"
               data-aos-duration="1000"
             >
-              {heroSettings?.title || "Leo Maiello"}
-            </h1>
+              <img 
+                src="/assets/leo_maiello_logo.png" 
+                alt="Leo Maiello" 
+                className="h-[70px] md:h-[120px] object-contain"
+              />
+            </div>
             
             {heroSettings?.subtitle && (
               <p 

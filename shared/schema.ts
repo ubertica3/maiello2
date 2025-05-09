@@ -64,6 +64,9 @@ export const insertContactSchema = createInsertSchema(contacts).pick({
 export type InsertContact = z.infer<typeof insertContactSchema>;
 export type Contact = typeof contacts.$inferSelect;
 
+// Event type enum
+export const eventTypeEnum = pgEnum('event_type', ['event', 'workshop']);
+
 // Events table
 export const events = pgTable("events", {
   id: serial("id").primaryKey(),
@@ -75,6 +78,7 @@ export const events = pgTable("events", {
   time: text("time").notNull(),
   image: text("image").notNull(),
   ticketUrl: text("ticket_url").notNull(),
+  eventType: eventTypeEnum("event_type").default("event").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
@@ -87,7 +91,8 @@ export const insertEventSchema = createInsertSchema(events).pick({
   month: true,
   time: true,
   image: true,
-  ticketUrl: true
+  ticketUrl: true,
+  eventType: true
 });
 
 export type InsertEvent = z.infer<typeof insertEventSchema>;
