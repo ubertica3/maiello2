@@ -25,6 +25,13 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PlusCircle, Edit, Trash2, Loader2, ArrowLeft } from 'lucide-react';
 
 type Event = {
@@ -53,6 +60,7 @@ const emptyEventForm: EventFormData = {
   time: '',
   image: '',
   ticketUrl: '',
+  eventType: 'event',
 };
 
 export default function EventsPage() {
@@ -155,6 +163,10 @@ export default function EventsPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     createEventMutation.mutate(formData);
@@ -182,6 +194,7 @@ export default function EventsPage() {
       time: event.time,
       image: event.image,
       ticketUrl: event.ticketUrl,
+      eventType: event.eventType || 'event',
     });
     setIsEditDialogOpen(true);
   };
@@ -328,6 +341,25 @@ export default function EventsPage() {
                   </div>
                   
                   <div className="space-y-2">
+                    <Label htmlFor="eventType">Tipo de Evento</Label>
+                    <Select
+                      value={formData.eventType}
+                      onValueChange={(value) => handleSelectChange("eventType", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="event">Evento</SelectItem>
+                        <SelectItem value="workshop">Taller/Workshop</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Selecciona si es un evento o un taller/workshop
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="ticketUrl">URL de Compra de Entradas</Label>
                     <Input
                       id="ticketUrl"
@@ -386,6 +418,7 @@ export default function EventsPage() {
                   <TableHead>Ciudad</TableHead>
                   <TableHead>Fecha</TableHead>
                   <TableHead>Hora</TableHead>
+                  <TableHead>Tipo</TableHead>
                   <TableHead className="text-right">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
@@ -397,6 +430,9 @@ export default function EventsPage() {
                     <TableCell>{event.location}</TableCell>
                     <TableCell>{event.date} {event.month}</TableCell>
                     <TableCell>{event.time}</TableCell>
+                    <TableCell>
+                      {event.eventType === 'workshop' ? 'Taller/Workshop' : 'Evento'}
+                    </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button
@@ -533,6 +569,25 @@ export default function EventsPage() {
               </div>
             </div>
             
+            <div className="space-y-2">
+              <Label htmlFor="edit-eventType">Tipo de Evento</Label>
+              <Select
+                value={formData.eventType}
+                onValueChange={(value) => handleSelectChange("eventType", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona un tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="event">Evento</SelectItem>
+                  <SelectItem value="workshop">Taller/Workshop</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Selecciona si es un evento o un taller/workshop
+              </p>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="edit-ticketUrl">URL de Compra de Entradas</Label>
               <Input
